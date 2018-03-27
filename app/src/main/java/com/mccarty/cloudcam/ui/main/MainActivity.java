@@ -2,34 +2,29 @@ package com.mccarty.cloudcam.ui.main;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 //import com.amazonaws.mobile.client.AWSMobileClient;
 import com.mccarty.cloudcam.R;
-import com.mccarty.cloudcam.utils.ErrorMessageString;
+import com.mccarty.cloudcam.ui.camera.CameraActivity;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainContract.View{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Inject
-    ErrorMessageString message;
-
-    private TextView mMainText;
+    MainFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +38,15 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                navigateToCamera();
             }
         });
-
-        //AWSMobileClient.getInstance().initialize(this).execute();
-
-        mMainText = (TextView) findViewById(R.id.main_text);
-        mMainText.setText(message.message());
 
         FragmentManager manager = getFragmentManager();
         FragmentTransaction trans = manager.beginTransaction();
 
-        MainActivityFragment frag = new MainActivityFragment();
-        //tra                                                                                                                                                                         ns.add();
-        //trans.commit();
+        trans.add(R.id.main_fragment,mainFragment);
+        trans.commit();
     }
 
     @Override
@@ -81,5 +69,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void navigateToCamera() {
+        startActivity(new Intent(this, CameraActivity.class));
     }
 }

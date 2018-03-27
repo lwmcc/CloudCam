@@ -5,7 +5,12 @@ import android.os.Bundle;
 
 import com.mccarty.cloudcam.R;
 
+import javax.inject.Inject;
+
 public class CameraActivity extends AppCompatActivity {
+
+    @Inject
+    CameraFragment cameraFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
