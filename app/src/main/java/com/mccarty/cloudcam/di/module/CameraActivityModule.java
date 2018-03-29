@@ -2,6 +2,8 @@ package com.mccarty.cloudcam.di.module;
 
 import com.mccarty.cloudcam.ui.camera.CameraFragment;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -13,6 +15,7 @@ import dagger.Provides;
 public class CameraActivityModule {
 
     @Provides
+    @Singleton
     CameraFragment providesCameraFragment() {
         return new CameraFragment();
     }

@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 //import com.amazonaws.mobile.client.AWSMobileClient;
+import com.mccarty.cloudcam.utils.NetworkUtils;
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
 
@@ -19,12 +20,15 @@ import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View{
+public class MainActivity extends AppCompatActivity implements MainContract.View {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     @Inject
     MainFragment mainFragment;
+
+    @Inject
+    NetworkUtils network;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         FragmentManager manager = getFragmentManager();
         FragmentTransaction trans = manager.beginTransaction();
 
-        trans.add(R.id.main_fragment,mainFragment);
+        trans.add(R.id.main_fragment, mainFragment);
         trans.commit();
     }
 
@@ -73,6 +77,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void navigateToCamera() {
-        startActivity(new Intent(this, CameraActivity.class));
+
+        if (network.hasNetworkAccess(this)) {
+            startActivity(new Intent(this, CameraActivity.class));
+        } else {
+            // TODO: show no internet dialog
+        }
     }
 }

@@ -18,7 +18,6 @@ public class AppModule {
     @Provides
     @Singleton
     Context provideContext(Application application) {
-
         return application;
     }
 }

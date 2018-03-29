@@ -1,7 +1,7 @@
 package com.mccarty.cloudcam.ui.main;
 
-import com.mccarty.cloudcam.BasePresenter;
-import com.mccarty.cloudcam.BaseView;
+import com.mccarty.cloudcam.ui.base.BasePresenter;
+import com.mccarty.cloudcam.ui.base.BaseView;
 
 /**
  * Created by Larry McCarty on 3/26/2018.
