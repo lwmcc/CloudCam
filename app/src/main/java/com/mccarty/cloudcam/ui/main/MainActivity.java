@@ -2,19 +2,21 @@ package com.mccarty.cloudcam.ui.main;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 //import com.amazonaws.mobile.client.AWSMobileClient;
+import com.mccarty.cloudcam.ui.camera.CameraActivity;
 import com.mccarty.cloudcam.utils.NetworkUtils;
 import com.mccarty.cloudcam.R;
-import com.mccarty.cloudcam.ui.camera.CameraActivity;
 
 import javax.inject.Inject;
 
@@ -23,6 +25,9 @@ import dagger.android.AndroidInjection;
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    @Inject
+    Context context;
 
     @Inject
     MainFragment mainFragment;
@@ -77,8 +82,7 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     @Override
     public void navigateToCamera() {
-
-        if (network.hasNetworkAccess(this)) {
+        if (network.hasNetworkAccess(context)) {
             startActivity(new Intent(this, CameraActivity.class));
         } else {
             // TODO: show no internet dialog
