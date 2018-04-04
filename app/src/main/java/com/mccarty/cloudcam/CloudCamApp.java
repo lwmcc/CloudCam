@@ -5,6 +5,7 @@ import android.app.Application;
 import android.support.multidex.MultiDexApplication;
 
 import com.mccarty.cloudcam.awsutils.AWSProvider;
+import com.mccarty.cloudcam.di.component.AppComponent;
 import com.mccarty.cloudcam.di.component.DaggerAppComponent;
 
 import javax.inject.Inject;
@@ -17,6 +18,8 @@ import dagger.android.HasActivityInjector;
  */
 
 public class CloudCamApp extends MultiDexApplication implements HasActivityInjector {
+
+    private AppComponent component;
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;

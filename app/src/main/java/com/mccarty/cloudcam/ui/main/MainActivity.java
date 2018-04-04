@@ -20,11 +20,18 @@ import com.mccarty.cloudcam.R;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 
 public class MainActivity extends AppCompatActivity implements MainContract.View {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    @BindView
+            (R.id.fab)
+    FloatingActionButton fab;
 
     @Inject
     Context context;
@@ -40,16 +47,10 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigateToCamera();
-            }
-        });
 
         FragmentManager manager = getFragmentManager();
         FragmentTransaction trans = manager.beginTransaction();
@@ -81,11 +82,17 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
     }
 
     @Override
-    public void navigateToCamera() {
-        if (network.hasNetworkAccess(context)) {
-            startActivity(new Intent(this, CameraActivity.class));
-        } else {
-            // TODO: show no internet dialog
-        }
+    public void hasInternetConnection() {
+
+    }
+
+    @Override
+    public void setPresenter(MainContract.Presenter presenter) {
+
+    }
+
+    @OnClick(R.id.fab)
+    public void navigateToCameraFragmen() {
+        startActivity(new Intent(MainActivity.this, CameraActivity.class));
     }
 }

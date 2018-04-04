@@ -1,9 +1,7 @@
 package com.mccarty.cloudcam.di.module;
 
-import android.content.Context;
-import android.net.NetworkInfo;
 
-import com.mccarty.cloudcam.utils.NetworkUtils;
+import com.mccarty.cloudcam.utils.CameraAPI;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -16,10 +14,10 @@ import dagger.Provides;
  */
 
 @Module
-public class NetworkUtilsModule {
+public class CameraModule {
 
     @Provides
-    NetworkUtils providesNetworkUtils() {
-        return new NetworkUtils();
+    CameraAPI provideCamera() {
+        return new CameraAPI();
     }
 }

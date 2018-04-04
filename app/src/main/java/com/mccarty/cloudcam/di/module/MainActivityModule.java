@@ -5,6 +5,8 @@ import dagger.Provides;
 
 import com.mccarty.cloudcam.ui.main.MainFragment;
 
+import javax.inject.Singleton;
+
 /**
  * Created by Larry McCarty on 3/20/2018.
  */
@@ -13,7 +15,7 @@ import com.mccarty.cloudcam.ui.main.MainFragment;
 public class MainActivityModule {
 
     @Provides
-    MainFragment providesMainFragment() {
+    MainFragment provideMainFragment() {
         return new MainFragment();
     }
 }

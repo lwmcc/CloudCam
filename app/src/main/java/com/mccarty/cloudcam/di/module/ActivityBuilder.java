@@ -1,5 +1,7 @@
 package com.mccarty.cloudcam.di.module;
 
+import com.mccarty.cloudcam.ui.camera.CameraActivity;
+import com.mccarty.cloudcam.ui.camera.CameraFragment;
 import com.mccarty.cloudcam.ui.main.MainActivity;
 
 import dagger.Module;
@@ -11,7 +13,14 @@ import dagger.android.ContributesAndroidInjector;
 
 @Module
 public abstract class ActivityBuilder {
-    @ContributesAndroidInjector(modules = {MainActivityModule.class, CameraActivityModule.class,
+    @ContributesAndroidInjector(modules = {MainActivityModule.class,
             NetworkUtilsModule.class})
     abstract MainActivity bindMainActivity();
+
+    //@ContributesAndroidInjector(modules = {CameraModule.class})
+    //abstract CameraFragment bindCameraFragment();
+
+    @ContributesAndroidInjector(modules = {CameraActivityModule.class,
+            NetworkUtilsModule.class, CameraModule.class})
+    abstract CameraActivity bindCameraActivity();
 }

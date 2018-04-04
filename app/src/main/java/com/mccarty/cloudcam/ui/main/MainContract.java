@@ -9,10 +9,10 @@ import com.mccarty.cloudcam.ui.base.BaseView;
 
 public interface MainContract {
     interface View extends BaseView<Presenter> {
-        void navigateToCamera();
+        //void navigateToCamera();
     }
 
-    interface Presenter extends BasePresenter<View> {
+    interface Presenter extends BasePresenter {
 
     }
 }

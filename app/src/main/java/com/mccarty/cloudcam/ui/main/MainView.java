@@ -5,5 +5,5 @@ package com.mccarty.cloudcam.ui.main;
  */
 
 public interface MainView {
-   void navigateToCamera();
+
 }
