@@ -22,19 +22,10 @@ public class CameraActivity extends AppCompatActivity implements CameraFragment.
     private final static String TAG = CameraActivity.class.getSimpleName();
 
     @Inject
-    Context context;
-
-    //@Inject
-    //Activity activity;
-
-    @Inject
     CameraFragment cameraFragment;
 
     @Inject
     CameraAPI cameraAPI;
-
-    @Inject
-    CameraManager cameraManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +38,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFragment.
         trans.add(R.id.camera_fragment, cameraFragment);
         trans.commit();
 
-        new CameraPresenter(cameraFragment, cameraAPI);
+        new CameraPresenter(cameraFragment, cameraAPI, this);
     }
 
     @Override

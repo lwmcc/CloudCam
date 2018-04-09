@@ -171,9 +171,10 @@ public class CameraFragment extends Fragment implements CameraContract.View {
         public void onError(@NonNull CameraDevice cameraDevice, int error) {
             cameraOpenCloseLock.release();
             cameraDevice.close();
-            cameraDevice = null;
+            // TODO: remove set to null
+            //cameraDevice = null;
             Activity activity = getActivity();
-            if (null != activity) {
+            if (activity != null) {
                 activity.finish();
             }
         }
@@ -255,7 +256,6 @@ public class CameraFragment extends Fragment implements CameraContract.View {
         }
 
     };
-
 
     public CameraFragment() {
         // Requires empty public constructor
@@ -372,7 +372,7 @@ public class CameraFragment extends Fragment implements CameraContract.View {
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
-            configureTransform(textureView.getWidth(), textureView.getHeight());
+            presenter.setTextureTransform(textureView.getWidth(), textureView.getHeight(), getActivity(), previewSize);
         }
 
         @Override
@@ -395,7 +395,13 @@ public class CameraFragment extends Fragment implements CameraContract.View {
             return;
         }
         setupCamera(width, height);
-        configureTransform(width, height);
+
+        if (null == textureView || null == previewSize || null == getActivity()) {
+            return;
+        }
+
+        presenter.setTextureTransform(width, height, getActivity(), previewSize);
+
         CameraManager manager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
         try {
             if (!cameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
@@ -732,39 +738,6 @@ public class CameraFragment extends Fragment implements CameraContract.View {
         }
     }
 
-    /**
-     * Configures the necessary {@link android.graphics.Matrix} transformation to `mTextureView`.
-     * This method should be called after the camera preview size is determined in
-     * setUpCameraOutputs and also the size of `mTextureView` is fixed.
-     *
-     * @param viewWidth  The width of `mTextureView`
-     * @param viewHeight The height of `mTextureView`
-     */
-    private void configureTransform(int viewWidth, int viewHeight) {
-        Activity activity = getActivity();
-        if (null == textureView || null == previewSize || null == activity) {
-            return;
-        }
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-        Matrix matrix = new Matrix();
-        RectF viewRect = new RectF(0, 0, viewWidth, viewHeight);
-        RectF bufferRect = new RectF(0, 0, previewSize.getHeight(), previewSize.getWidth());
-        float centerX = viewRect.centerX();
-        float centerY = viewRect.centerY();
-        if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
-            bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
-            matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
-            float scale = Math.max(
-                    (float) viewHeight / previewSize.getHeight(),
-                    (float) viewWidth / previewSize.getWidth());
-            matrix.postScale(scale, scale, centerX, centerY);
-            matrix.postRotate(90 * (rotation - 2), centerX, centerY);
-        } else if (Surface.ROTATION_180 == rotation) {
-            matrix.postRotate(180, centerX, centerY);
-        }
-        textureView.setTransform(matrix);
-    }
-
     @Override
     public void lockFocus() {
         try {
@@ -872,6 +845,11 @@ public class CameraFragment extends Fragment implements CameraContract.View {
     @Override
     public void showToast(String message) {
         UIUtils.showToast(message, getActivity());
+    }
+
+    @Override
+    public void setTextureViewTransform(Matrix matrix) {
+        textureView.setTransform(matrix);
     }
 
 }

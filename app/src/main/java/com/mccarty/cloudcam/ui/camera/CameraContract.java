@@ -1,5 +1,9 @@
 package com.mccarty.cloudcam.ui.camera;
 
+import android.app.Activity;
+import android.graphics.Matrix;
+import android.util.Size;
+
 import com.mccarty.cloudcam.ui.base.BasePresenter;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
@@ -23,6 +27,8 @@ public interface CameraContract {
         void lockFocus();
 
         void showToast(String message);
+
+        void setTextureViewTransform(Matrix matrix);
     }
 
     interface Presenter extends BasePresenter {
@@ -35,5 +41,7 @@ public interface CameraContract {
         void openCamera(int width, int height);
 
         void lockFocus();
+
+        void setTextureTransform(int width, int height, Activity act, Size size);
     }
 }

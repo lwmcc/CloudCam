@@ -603,4 +603,6 @@ public class CameraAPI implements ActivityCompat.OnRequestPermissionsResultCallb
 
     }
 
+
+
 }
