@@ -12,7 +12,7 @@ import javax.inject.Singleton;
  */
 
 @Module
-public class MainActivityModule {
+public class MainFragmentModule {
 
     @Provides
     MainFragment provideMainFragment() {

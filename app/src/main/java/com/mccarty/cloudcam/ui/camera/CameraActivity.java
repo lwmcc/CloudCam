@@ -1,7 +1,10 @@
 package com.mccarty.cloudcam.ui.camera;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,12 +22,19 @@ public class CameraActivity extends AppCompatActivity implements CameraFragment.
     private final static String TAG = CameraActivity.class.getSimpleName();
 
     @Inject
+    Context context;
+
+    //@Inject
+    //Activity activity;
+
+    @Inject
     CameraFragment cameraFragment;
 
     @Inject
     CameraAPI cameraAPI;
 
-    private CameraPresenter cameraPresenter;
+    @Inject
+    CameraManager cameraManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +47,7 @@ public class CameraActivity extends AppCompatActivity implements CameraFragment.
         trans.add(R.id.camera_fragment, cameraFragment);
         trans.commit();
 
-        cameraPresenter = new CameraPresenter(cameraAPI, cameraFragment);
+        new CameraPresenter(cameraFragment, cameraAPI);
     }
 
     @Override

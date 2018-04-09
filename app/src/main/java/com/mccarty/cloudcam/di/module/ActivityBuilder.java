@@ -13,12 +13,8 @@ import dagger.android.ContributesAndroidInjector;
 
 @Module
 public abstract class ActivityBuilder {
-    @ContributesAndroidInjector(modules = {MainActivityModule.class,
-            NetworkUtilsModule.class})
+    @ContributesAndroidInjector(modules = {MainFragmentModule.class})
     abstract MainActivity bindMainActivity();
-
-    //@ContributesAndroidInjector(modules = {CameraModule.class})
-    //abstract CameraFragment bindCameraFragment();
 
     @ContributesAndroidInjector(modules = {CameraActivityModule.class,
             NetworkUtilsModule.class, CameraModule.class})

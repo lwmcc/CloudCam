@@ -1,6 +1,9 @@
 package com.mccarty.cloudcam.di.module;
 
 
+import android.content.Context;
+import android.hardware.camera2.CameraManager;
+
 import com.mccarty.cloudcam.utils.CameraAPI;
 
 import javax.inject.Inject;
@@ -16,8 +19,9 @@ import dagger.Provides;
 @Module
 public class CameraModule {
 
-    @Provides
-    CameraAPI provideCamera() {
-        return new CameraAPI();
-    }
+   /* @Provides
+    @Inject
+    CameraAPI provideCamera(CameraManager manager) {
+        return new CameraAPI(manager);
+    }*/
 }

@@ -29,18 +29,11 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    @BindView
-            (R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton fab;
 
     @Inject
-    Context context;
-
-    @Inject
     MainFragment mainFragment;
-
-    @Inject
-    NetworkUtils network;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

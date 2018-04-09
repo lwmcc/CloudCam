@@ -7,8 +7,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.mccarty.cloudcam.CloudCamApp;
+import com.mccarty.cloudcam.ui.main.MainActivity;
+import com.mccarty.cloudcam.utils.CameraAPI;
 import com.mccarty.cloudcam.utils.NetworkUtils;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -27,5 +30,23 @@ public class AppModule {
     @Singleton
     Context provideContext(Application application) {
         return application;
+    }
+
+    @Provides
+    @Singleton
+    CameraManager provideCameraManager(Context context) {
+       return (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    CameraAPI provideCameraAPI(CameraManager manager) {
+        return new CameraAPI(manager);
+    }
+
+    @Provides
+    @Singleton
+    MainActivity provideMainActivity() {
+        return new MainActivity();
     }
 }

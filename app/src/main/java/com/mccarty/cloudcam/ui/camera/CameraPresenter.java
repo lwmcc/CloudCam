@@ -1,7 +1,11 @@
 package com.mccarty.cloudcam.ui.camera;
 
+import android.app.Activity;
+import android.content.Context;
+import android.hardware.camera2.CameraManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mccarty.cloudcam.utils.CameraAPI;
 
@@ -14,27 +18,44 @@ import static dagger.internal.Preconditions.checkNotNull;
  */
 
 public class CameraPresenter implements CameraContract.Presenter {
+    @Override
+    public void lockFocus() {
+
+    }
 
     private static final String TAG = CameraPresenter.class.getSimpleName();
 
     private final CameraContract.View cameraView;
-    private final CameraAPI camera;
+
+    //private final Context context;
+
+    //private final Activity activity;
 
     @Inject
-    public CameraPresenter(@NonNull CameraAPI cameraAPI, @NonNull CameraContract.View camView) {
-        camera = checkNotNull(cameraAPI, "Camera Cannot Be NUll");
-        cameraView = checkNotNull(camView, "CameraView Cannot Be NUll");
+    CameraAPI camera;
+
+    @Inject
+    public CameraPresenter(@NonNull CameraContract.View camView,
+                           @NonNull CameraAPI cameraAPI)
+
+                           //,@NonNull Activity act)
+                           {
+        cameraView = checkNotNull(camView, "CameraView Cannot Be Null");
+        camera = checkNotNull(cameraAPI, "Camera API Cannot Be Null");
+        //context = checkNotNull(con, "Context Cannot Be Null");
+        //activity = checkNotNull(act, "Activity Cannot Be Null");
         cameraView.setPresenter(this);
     }
 
     @Override
-    public int getNumberOfCameras() {
-        int numCameras = 0;
+    public void setUpCameraOutput() {
+        //camera.setUpCameraOutputs();
+    }
 
-        Log.d(TAG, "ENTER getNumberOfCameras()");
-
-        //camera.setUpCameraOutput();
-        return numCameras;
+    @Override
+    public void openCamera(int width, int height) {
+        //camera.setUpCameraOutputs(width, height);
+        //camera.openCamera(width, height, context);
     }
 
     @Override
@@ -50,5 +71,17 @@ public class CameraPresenter implements CameraContract.Presenter {
     @Override
     public void start() {
         Log.d(TAG,"CAMERA START");
+        setupCamera();
     }
+
+    private void setupCamera() {
+        cameraView.checkTextureView();
+    }
+
+
+    /*@Override
+    public void lockFocus() {
+        cameraView.showToast("Camera Lock Focus");
+       // camera.lockFocus();
+    }*/
 }
