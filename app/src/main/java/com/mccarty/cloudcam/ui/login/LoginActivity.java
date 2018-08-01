@@ -13,16 +13,25 @@ import com.amazonaws.mobile.auth.ui.AuthUIConfiguration;
 import com.amazonaws.mobile.auth.ui.SignInActivity;
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.awsutils.AWSProvider;
+import com.mccarty.cloudcam.ui.base.BaseActivity;
 import com.mccarty.cloudcam.ui.main.MainActivity;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final IdentityManager identityManager = AWSProvider.getInstance().getIdentityManager();
+
+
+        // Start the authentication UI
+       /* AuthUIConfiguration config = new AuthUIConfiguration.Builder()
+                .userPools(true)
+                .build();
+        SignInActivity.startSignInActivity(this, config);
+        LoginActivity.this.finish();*/
+    }/*    final IdentityManager identityManager = AWSProvider.getInstance().getIdentityManager();
         // Set up the callbacks to handle the authentication response
         identityManager.setUpToAuthenticate(this, new DefaultSignInResultHandler() {
             @Override
@@ -41,13 +50,5 @@ public class LoginActivity extends AppCompatActivity {
             public boolean onCancel(Activity activity) {
                 return false;
             }
-        });
-
-        // Start the authentication UI
-        AuthUIConfiguration config = new AuthUIConfiguration.Builder()
-                .userPools(true)
-                .build();
-        SignInActivity.startSignInActivity(this, config);
-        LoginActivity.this.finish();
-    }
+        });*/
 }

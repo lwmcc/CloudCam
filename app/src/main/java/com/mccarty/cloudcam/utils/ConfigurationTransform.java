@@ -14,10 +14,10 @@ import javax.inject.Inject;
 
 public class ConfigurationTransform {
 
-    int width;
-    int height;
-    Activity activity;
-    Size size;
+    private final int width;
+    private final int height;
+    private final Activity activity;
+    private final Size size;
 
     @Inject
     public ConfigurationTransform(int width, int height, Activity activity, Size size) {
@@ -27,7 +27,8 @@ public class ConfigurationTransform {
         this.size = size;
     }
 
-    public Matrix configureTransform(int width, int height, Activity activity, Size size) {
+    //public Matrix configureTransform(int width, int height, Activity activity, Size size) {
+    public Matrix configureTransform() {
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         Matrix matrix = new Matrix();
         RectF viewRect = new RectF(0, 0, width, height);

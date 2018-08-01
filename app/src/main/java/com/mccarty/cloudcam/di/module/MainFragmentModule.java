@@ -13,7 +13,6 @@ import javax.inject.Singleton;
 
 @Module
 public class MainFragmentModule {
-
     @Provides
     MainFragment provideMainFragment() {
         return new MainFragment();

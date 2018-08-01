@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mccarty.cloudcam.ui.main.MainFragment"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.mccarty.cloudcam.ui.main.Main2ActivityFragment"
+    tools:showIn="@layout/activity_main2">
 
     <TextView
         android:id="@+id/textView"
@@ -15,4 +15,3 @@
         tools:layout_editor_absoluteX="163dp"
         tools:layout_editor_absoluteY="173dp" />
 </android.support.constraint.ConstraintLayout>
-

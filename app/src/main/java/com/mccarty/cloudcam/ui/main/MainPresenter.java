@@ -1,8 +1,13 @@
 package com.mccarty.cloudcam.ui.main;
 
+import com.mccarty.cloudcam.ui.base.BasePresenter;
+
 /**
- * Created by Larry McCarty on 3/26/2018.
+ * Created by Larry McCarty on 7/25/2018.
  */
 
-public interface MainPresenter {
+public interface MainPresenter extends BasePresenter {
+    boolean hasInternetConnection();
+    int getNumbereOfCameras();
+    void captureImage();
 }

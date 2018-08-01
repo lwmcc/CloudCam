@@ -14,9 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 //import com.amazonaws.mobile.client.AWSMobileClient;
+import com.mccarty.cloudcam.R;
+import com.mccarty.cloudcam.ui.base.BaseActivity;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
 import com.mccarty.cloudcam.utils.NetworkUtils;
-import com.mccarty.cloudcam.R;
 
 import javax.inject.Inject;
 
@@ -25,7 +26,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 
-public class MainActivity extends AppCompatActivity implements MainContract.View {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -72,16 +73,6 @@ public class MainActivity extends AppCompatActivity implements MainContract.View
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void hasInternetConnection() {
-
-    }
-
-    @Override
-    public void setPresenter(MainContract.Presenter presenter) {
-
     }
 
     @OnClick(R.id.fab)

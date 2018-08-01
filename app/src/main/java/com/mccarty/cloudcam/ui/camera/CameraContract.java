@@ -2,9 +2,10 @@ package com.mccarty.cloudcam.ui.camera;
 
 import android.app.Activity;
 import android.graphics.Matrix;
+import android.hardware.camera2.CameraDevice;
 import android.util.Size;
 
-import com.mccarty.cloudcam.ui.base.BasePresenter;
+//import com.mccarty.cloudcam.ui.base.BasePresenter;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
 /**
@@ -12,6 +13,7 @@ import com.mccarty.cloudcam.ui.base.BaseView;
  */
 
 public interface CameraContract {
+/*
 
     interface View extends BaseView<Presenter> {
         void switchCameraButtonPressed();
@@ -22,6 +24,8 @@ public interface CameraContract {
 
         void openCamera(int width, int height);
 
+        void openCamera(int width, int height, Activity activity);
+
         void setupCamera(int width, int height);
 
         void lockFocus();
@@ -29,9 +33,12 @@ public interface CameraContract {
         void showToast(String message);
 
         void setTextureViewTransform(Matrix matrix);
-    }
 
-    interface Presenter extends BasePresenter {
+        void checkCameraPermissions();
+    }
+*/
+
+  /*  interface Presenter extends BasePresenter {
         void captureImage();
 
         void switchCamera();
@@ -43,5 +50,11 @@ public interface CameraContract {
         void lockFocus();
 
         void setTextureTransform(int width, int height, Activity act, Size size);
-    }
+
+        boolean checkCameraPermissions(Activity activity);
+
+        boolean activityAndCameraDeviceAreNull(Activity activity, CameraDevice cam);
+
+        void captureStillPicture();
+    }*/
 }

@@ -11,7 +11,12 @@ import android.view.ViewGroup;
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
 
-public class MainFragment extends Fragment {
+import javax.inject.Inject;
+
+public class MainFragment extends Fragment implements MainView {
+
+    //@Inject
+    //MainPresenterImpl<MainView> mainPresenter;
 
     public MainFragment() {
     }
@@ -20,7 +25,24 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        FloatingActionButton fab = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startCameraButtonClicked();
+            }
+        });
+
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
+    @Override
+    public void startCameraButtonClicked() {
+        startActivity(new Intent(getActivity(), CameraActivity.class));
+    }
+
+    @Override
+    public void hasInternetConnection() {
+
+    }
 }

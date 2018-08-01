@@ -1,31 +1,23 @@
 package com.mccarty.cloudcam.ui.camera;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.hardware.camera2.CameraManager;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.mccarty.cloudcam.R;
+import com.mccarty.cloudcam.ui.base.BaseActivity;
 import com.mccarty.cloudcam.utils.CameraAPI;
+import com.mccarty.cloudcam.utils.ConfigurationTransform;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 
-public class CameraActivity extends AppCompatActivity implements CameraFragment.OnFragmentInteractionListener {
+public class CameraActivity extends BaseActivity {
 
     private final static String TAG = CameraActivity.class.getSimpleName();
-
-    @Inject
-    CameraFragment cameraFragment;
-
-    @Inject
-    CameraAPI cameraAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +27,11 @@ public class CameraActivity extends AppCompatActivity implements CameraFragment.
 
         FragmentManager manager = getFragmentManager();
         FragmentTransaction trans = manager.beginTransaction();
-        trans.add(R.id.camera_fragment, cameraFragment);
+
+        CameraFragment frag = new CameraFragment();
+
+        trans.add(R.id.camera_fragment, frag);
         trans.commit();
-
-        new CameraPresenter(cameraFragment, cameraAPI, this);
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
 }

@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mccarty.cloudcam.ui.main.MainFragment"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.mccarty.cloudcam.ui.main.Main3ActivityFragment"
+    tools:showIn="@layout/activity_main3">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Main Fragment"
-        tools:layout_editor_absoluteX="163dp"
-        tools:layout_editor_absoluteY="173dp" />
-</android.support.constraint.ConstraintLayout>
+        android:text="Fragment"
+        tools:layout_editor_absoluteX="188dp"
+        tools:layout_editor_absoluteY="193dp" />
 
+</android.support.constraint.ConstraintLayout>
