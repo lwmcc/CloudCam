@@ -32,12 +32,12 @@ import javax.inject.Inject;
 
 public class CameraAPI {
 
-    @Inject
-    Context context;
-
     private static final String TAG = CameraAPI.class.getSimpleName();
 
-    //final private CameraManager cameraManager;
+    //@Inject
+    //Context context;
+
+    private final CameraManager cameraManager;
 
     private int state = STATE_PREVIEW;
     private CameraCaptureSession captureSession;
@@ -98,8 +98,9 @@ public class CameraAPI {
 
     private ImageReader mImageReader;
 
+    @Inject
     public CameraAPI(CameraManager manager) {
-
+        this.cameraManager = manager;
     }
 
     /**
@@ -166,7 +167,7 @@ public class CameraAPI {
             captureSession.capture(previewRequestBuilder.build(), captureCallback,
                     backgroundHandler);
         } catch (CameraAccessException e) {
-            Log.e(TAG,"CAMERA ERROR: " + e.getMessage());
+            Log.e(TAG, "CAMERA ERROR: " + e.getMessage());
         }
     }
 
