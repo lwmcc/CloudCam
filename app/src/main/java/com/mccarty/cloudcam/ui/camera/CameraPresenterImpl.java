@@ -3,22 +3,23 @@ package com.mccarty.cloudcam.ui.camera;
 import android.content.Context;
 import android.util.Log;
 
+import com.mccarty.cloudcam.model.CameraModel;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
-import static dagger.internal.Preconditions.checkNotNull;
+import javax.inject.Inject;
 
-/**
- * Created by Larry McCarty on 3/30/2018.
- */
+import static dagger.internal.Preconditions.checkNotNull;
 
 public class CameraPresenterImpl<V extends CameraView> implements CameraPresenter<V> {
 
     private V view;
+    private final CameraModel model;
 
     private static final String TAG = CameraPresenterImpl.class.getSimpleName();
 
-    public void setView(V view) {
+    public CameraPresenterImpl(V view, CameraModel model) {
         this.view = view;
+        this.model = model;
     }
 
     public V getView() {
@@ -32,7 +33,8 @@ public class CameraPresenterImpl<V extends CameraView> implements CameraPresente
 
     @Override
     public void takePicture() {
-        Log.d(TAG,"TAKE PIC");
+        // TODO:
+        model.snapPhoto();
     }
 
 

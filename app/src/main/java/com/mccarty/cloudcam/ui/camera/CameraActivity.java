@@ -2,16 +2,10 @@ package com.mccarty.cloudcam.ui.camera;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.base.BaseActivity;
-import com.mccarty.cloudcam.utils.CameraAPI;
-import com.mccarty.cloudcam.utils.ConfigurationTransform;
-
-import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 

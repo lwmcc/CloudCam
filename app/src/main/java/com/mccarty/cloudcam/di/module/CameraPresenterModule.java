@@ -6,13 +6,9 @@ import com.mccarty.cloudcam.ui.main.MainPresenterImpl;
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by Larry McCarty on 7/25/2018.
- */
-
 @Module
 public class CameraPresenterModule {
-    @Provides
+    /*@Provides
     CameraPresenterImpl provideCameraPresenter() { return new CameraPresenterImpl();
-    }
+    }*/
 }

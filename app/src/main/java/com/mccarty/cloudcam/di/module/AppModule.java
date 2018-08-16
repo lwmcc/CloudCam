@@ -2,7 +2,9 @@ package com.mccarty.cloudcam.di.module;
 
 import android.app.Application;
 import android.content.Context;
+import android.hardware.camera2.CameraManager;
 
+import com.mccarty.cloudcam.model.api.CameraAPI;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
 import com.mccarty.cloudcam.ui.main.Main3Activity;
 
@@ -12,12 +14,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 
-/**
- * Created by Larry McCarty on 3/20/2018.
- */
-
 @Module
 public abstract class AppModule {
+/*
 
     Application application;
 
@@ -27,7 +26,7 @@ public abstract class AppModule {
     @ContributesAndroidInjector
     abstract CameraActivity cameraActivity();
 
-   /* public AppModule(Application application) {
+    public AppModule(Application application) {
         this.application = application;
     }
 
@@ -36,28 +35,12 @@ public abstract class AppModule {
     Application providesApplication() {
         return application;
     }
+*/
 
-    @Provides
+    /*@Provides
     @Singleton
     Context provideContext() {
         return application;
     }
 */
-   /* @Provides
-    @Singleton
-    CameraManager provideCameraManager(Context context) {
-        return (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-    }
-
-    @Provides
-    @Singleton
-    CameraAPI provideCameraAPI(CameraManager manager) {
-        return new CameraAPI(manager);
-    }
-
-    @Provides
-    @Singleton
-    MainActivity provideMainActivity() {
-        return new MainActivity();
-    }*/
 }

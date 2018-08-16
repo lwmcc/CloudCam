@@ -1,9 +1,6 @@
 package com.mccarty.cloudcam.di.module;
 
 import com.mccarty.cloudcam.ui.camera.CameraFragment;
-import com.mccarty.cloudcam.utils.CameraAPI;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;

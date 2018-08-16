@@ -5,15 +5,13 @@ import android.support.multidex.MultiDexApplication;
 
 import com.mccarty.cloudcam.di.component.DaggerAppComponent;
 
+import java.util.stream.IntStream;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
-
-/**
- * Created by Larry McCarty on 3/20/2018.
- */
 
 public class CloudCamApp extends MultiDexApplication implements HasActivityInjector {
 

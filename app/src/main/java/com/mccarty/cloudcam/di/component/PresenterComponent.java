@@ -1,6 +1,7 @@
 package com.mccarty.cloudcam.di.component;
 
 //import com.mccarty.cloudcam.di.module.AppModule;
+import com.mccarty.cloudcam.di.module.CameraModelModule;
 import com.mccarty.cloudcam.di.module.MainFragmentModule;
 import com.mccarty.cloudcam.di.module.MainPresenterModule;
 import com.mccarty.cloudcam.ui.camera.CameraFragment;
@@ -15,7 +16,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = MainPresenterModule.class)
+@Component(modules = {MainPresenterModule.class, CameraModelModule.class})
 public interface PresenterComponent {
     void inject(CameraFragment cameraFragment);
 }

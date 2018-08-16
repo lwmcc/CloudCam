@@ -9,14 +9,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mccarty.cloudcam.R;
+import com.mccarty.cloudcam.model.CameraModel;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
 
 import javax.inject.Inject;
 
 public class MainFragment extends Fragment implements MainView {
 
-    //@Inject
-    //MainPresenterImpl<MainView> mainPresenter;
+    @Inject
+    MainPresenterImpl mainPresenter;
 
     public MainFragment() {
     }

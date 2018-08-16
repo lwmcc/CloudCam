@@ -1,66 +1,15 @@
 package com.mccarty.cloudcam.ui.camera;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.graphics.ImageFormat;
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.graphics.RectF;
-import android.graphics.SurfaceTexture;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.CameraMetadata;
-import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.CaptureResult;
-import android.hardware.camera2.TotalCaptureResult;
-import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.Image;
-import android.media.ImageReader;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.util.Size;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
-import android.view.Surface;
-import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.mccarty.cloudcam.R;
-import com.mccarty.cloudcam.ui.main.MainPresenterImpl;
-import com.mccarty.cloudcam.utils.AutoFitTextureView;
-import com.mccarty.cloudcam.utils.CameraAPI;
-import com.mccarty.cloudcam.utils.UIUtils;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+import com.mccarty.cloudcam.model.CameraModel;
 
 import javax.inject.Inject;
 
@@ -75,6 +24,9 @@ public class CameraFragment extends Fragment implements CameraView {
 
 
     private CameraPresenterImpl presenter;
+
+    @Inject
+    CameraModel model;
     /*
     @Inject
     Context context;
@@ -153,8 +105,7 @@ public class CameraFragment extends Fragment implements CameraView {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CameraPresenterImpl();
-        presenter.setView(this);
+        presenter = new CameraPresenterImpl(this, model);
     }
 
     @Override
