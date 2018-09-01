@@ -34,9 +34,6 @@ public class CameraAPI {
 
     private static final String TAG = CameraAPI.class.getSimpleName();
 
-    //@Inject
-    //Context context;
-
     private final CameraManager cameraManager;
 
     private int state = STATE_PREVIEW;
@@ -117,7 +114,7 @@ public class CameraAPI {
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
 
-    private final ImageReader.OnImageAvailableListener onImageAvailableListener
+   /* private final ImageReader.OnImageAvailableListener onImageAvailableListener
             = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
@@ -158,9 +155,12 @@ public class CameraAPI {
         }
 
     }
-
+*/
     public void lockFocus() {
-        try {
+
+        Log.d(TAG,"FROM CAMERA");
+
+ /*       try {
             previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER,
                     CameraMetadata.CONTROL_AF_TRIGGER_START);
             state = STATE_WAITING_LOCK;
@@ -168,13 +168,13 @@ public class CameraAPI {
                     backgroundHandler);
         } catch (CameraAccessException e) {
             Log.e(TAG, "CAMERA ERROR: " + e.getMessage());
-        }
+        }*/
     }
 
     /**
      * A {@link CameraCaptureSession.CaptureCallback} that handles events related to JPEG capture.
      */
-    private CameraCaptureSession.CaptureCallback captureCallback
+  /*  private CameraCaptureSession.CaptureCallback captureCallback
             = new CameraCaptureSession.CaptureCallback() {
 
         private void process(CaptureResult result) {
@@ -221,7 +221,8 @@ public class CameraAPI {
                     break;
                 }
             }
-        }
+        }*/
+/*
 
         @Override
         public void onCaptureProgressed(@NonNull CameraCaptureSession session,
@@ -238,6 +239,7 @@ public class CameraAPI {
         }
 
     };
+*/
 
     private void captureStillPicture() {
         //try {
@@ -282,7 +284,7 @@ public class CameraAPI {
         }*/
     }
 
-    private int getOrientation(int rotation) {
+  /*  private int getOrientation(int rotation) {
         // Sensor orientation is 90 for most devices, or 270 for some devices (eg. Nexus 5X)
         // We have to take that into account and rotate JPEG properly.
         // For devices with orientation of 90, we simply return our mapping from ORIENTATIONS.
@@ -309,7 +311,7 @@ public class CameraAPI {
             requestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                     CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
         }
-    }
+    }*/
 
 /*    public void setupCamera(final int width, final int height) {
         CameraManager manager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
@@ -405,7 +407,7 @@ public class CameraAPI {
     }*/
 
 
-    static class CompareSizesByArea implements Comparator<Size> {
+   /* static class CompareSizesByArea implements Comparator<Size> {
         @Override
         public int compare(Size lhs, Size rhs) {
             // We cast here to ensure the multiplications won't overflow
@@ -429,7 +431,7 @@ public class CameraAPI {
         } catch (CameraAccessException e) {
             Log.e(TAG, "CAMERA ERROR: " + e.getMessage());
         }
-    }
+    }*/
 
     private void createCameraPreviewSession() {
       /*  try {
@@ -489,7 +491,7 @@ public class CameraAPI {
         }*/
     }
 
-    private static Size chooseOptimalSize(Size[] choices, int textureViewWidth,
+  /*  private static Size chooseOptimalSize(Size[] choices, int textureViewWidth,
                                           int textureViewHeight, int maxWidth, int maxHeight, Size aspectRatio) {
 
         // Collect the supported resolutions that are at least as big as the preview Surface
@@ -518,5 +520,5 @@ public class CameraAPI {
             Log.e(TAG, "Couldn't find any suitable preview size");
             return choices[0];
         }
-    }
+    }*/
 }

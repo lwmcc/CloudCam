@@ -1,21 +1,28 @@
 package com.mccarty.cloudcam.model;
 
+import android.util.Log;
+
 import com.mccarty.cloudcam.model.api.CameraAPI;
 
 import javax.inject.Inject;
 
-/**
- * Created by Larry McCarty on 8/15/2018.
- */
+import dagger.Module;
 
 public class CameraModel {
 
+    private static final String TAG = CameraModel.class.getSimpleName();
+
+    private final CameraAPI cameraAPI;
+
     @Inject
-    CameraAPI camera;
+    public CameraModel(CameraAPI api) {
+        this.cameraAPI = api;
+    }
+
 
     public void snapPhoto() {
         // TODO:
-
+        cameraAPI.lockFocus();
     }
 
 }

@@ -1,16 +1,13 @@
 package com.mccarty.cloudcam.di.component;
 
-import com.mccarty.cloudcam.di.module.CameraFragmentModule;
-import com.mccarty.cloudcam.di.module.CameraModule;
-import com.mccarty.cloudcam.model.CameraModel;
-import com.mccarty.cloudcam.ui.camera.CameraActivity;
+import com.mccarty.cloudcam.ui.camera.CameraFragment;
 
-import javax.inject.Singleton;
-
-import dagger.Component;
-
-@Singleton
-@Component(modules = CameraModule.class)
-public interface CameraComponent {
-    //void inject(CameraModel cameraModel);
+import dagger.android.AndroidInjector;
+//@CameraScope
+//@Subcomponent(modules = CameraModule.class)
+public interface CameraComponent extends AndroidInjector<CameraFragment> {
+  /*  @Subcomponent.Builder
+    abstract class Builder extends AndroidInjector.Builder<CameraFragment>{
+        abstract Builder cameraModule(CameraModule cameraModule);
+    }*/
 }

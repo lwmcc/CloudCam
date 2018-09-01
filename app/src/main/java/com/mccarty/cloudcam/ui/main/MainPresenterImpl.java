@@ -24,11 +24,6 @@ public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
     }
 
     @Override
-    public Context getContext() {
-        return null;
-    }
-
-    @Override
     public boolean hasInternetConnection() {
         return false;
     }
@@ -43,4 +38,13 @@ public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
         Log.d(TAG,"CAPTURE IMAGE");
     }
 
+    @Override
+    public void takeView(Object view) {
+
+    }
+
+    @Override
+    public void dropView() {
+
+    }
 }

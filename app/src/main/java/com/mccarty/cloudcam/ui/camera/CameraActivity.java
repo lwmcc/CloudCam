@@ -7,11 +7,14 @@ import android.os.Bundle;
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.base.BaseActivity;
 
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjection;
 
 public class CameraActivity extends BaseActivity {
 
-    private final static String TAG = CameraActivity.class.getSimpleName();
+    @Inject
+    CameraFragment cameraFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +25,7 @@ public class CameraActivity extends BaseActivity {
         FragmentManager manager = getFragmentManager();
         FragmentTransaction trans = manager.beginTransaction();
 
-        CameraFragment frag = new CameraFragment();
-
-        trans.add(R.id.camera_fragment, frag);
+        trans.add(R.id.camera_fragment, cameraFragment);
         trans.commit();
     }
-
 }
