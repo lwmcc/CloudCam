@@ -7,6 +7,7 @@ import com.mccarty.cloudcam.di.module.ActivityBuilder;
 import com.mccarty.cloudcam.di.module.AppModule;
 import com.mccarty.cloudcam.di.module.CameraFragmentModule;
 import com.mccarty.cloudcam.di.module.CameraPresenterModule;
+import com.mccarty.cloudcam.di.module.PreferencesModule;
 import com.mccarty.cloudcam.ui.camera.CameraFragment;
 
 import javax.inject.Singleton;
@@ -18,7 +19,7 @@ import dagger.android.AndroidInjector;
 
 @Singleton
 @Component(modules = {AndroidInjectionModule.class, AppModule.class,
-        ActivityBuilder.class, CameraPresenterModule.class})
+        ActivityBuilder.class, CameraPresenterModule.class, PreferencesModule.class})
 public interface AppComponent extends AndroidInjector<CloudCamApp> {
     @Component.Builder
     interface Builder {

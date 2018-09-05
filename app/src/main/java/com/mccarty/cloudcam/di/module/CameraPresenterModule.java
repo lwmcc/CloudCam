@@ -4,12 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import android.hardware.camera2.CameraManager;
 
-import com.mccarty.cloudcam.model.CameraModel;
-import com.mccarty.cloudcam.model.api.CameraAPI;
+import com.mccarty.cloudcam.persistence.CameraModel;
+import com.mccarty.cloudcam.persistence.api.CameraAPI;
+import com.mccarty.cloudcam.persistence.local.AppPreferences;
 import com.mccarty.cloudcam.ui.camera.CameraPresenterImpl;
-import com.mccarty.cloudcam.ui.main.MainPresenterImpl;
 
-import javax.inject.Singleton;
+import java.io.File;
 
 import dagger.Module;
 import dagger.Provides;
@@ -18,13 +18,18 @@ import dagger.Provides;
 public class CameraPresenterModule {
 
     @Provides
+    File provideFile(Application application) {
+        return new File(application.getExternalFilesDir(null), "pic.jpg");
+    }
+
+    @Provides
     CameraManager provideCameraManager(Application application) {
         return (CameraManager) application.getSystemService(Context.CAMERA_SERVICE);
     }
 
     @Provides
-    CameraAPI provideCamera(CameraManager manager) {
-        return new CameraAPI(manager);
+    CameraAPI provideCamera(CameraManager manager, File file, AppPreferences appPreferences) {
+        return new CameraAPI(manager, file, appPreferences);
     }
 
     @Provides

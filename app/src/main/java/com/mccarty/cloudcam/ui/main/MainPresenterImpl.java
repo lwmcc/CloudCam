@@ -47,4 +47,9 @@ public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
     public void dropView() {
 
     }
+
+    @Override
+    public void finishActivity() {
+
+    }
 }

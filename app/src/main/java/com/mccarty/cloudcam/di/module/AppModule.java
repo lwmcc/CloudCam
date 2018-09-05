@@ -7,8 +7,11 @@ import android.hardware.Camera;
 
 import com.mccarty.cloudcam.di.component.CameraComponent;
 import com.mccarty.cloudcam.di.component.CameraFragmentComponent;
+import com.mccarty.cloudcam.persistence.local.AppPreferences;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
 import com.mccarty.cloudcam.ui.camera.CameraFragment;
+
+import javax.inject.Singleton;
 
 import dagger.Binds;
 import dagger.Module;

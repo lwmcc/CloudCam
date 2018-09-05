@@ -1,8 +1,6 @@
 package com.mccarty.cloudcam.di.component;
 
 import com.mccarty.cloudcam.di.module.CameraFragmentModule;
-import com.mccarty.cloudcam.di.module.CameraModule;
-import com.mccarty.cloudcam.di.module.CameraPresenterModule;
 import com.mccarty.cloudcam.ui.camera.CameraFragment;
 
 import dagger.Subcomponent;
