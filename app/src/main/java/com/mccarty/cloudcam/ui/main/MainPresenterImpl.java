@@ -1,13 +1,9 @@
 package com.mccarty.cloudcam.ui.main;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 import com.mccarty.cloudcam.ui.base.BaseView;
-
-/**
- * Created by Larry McCarty on 3/26/2018.
- */
 
 public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
 
@@ -49,7 +45,8 @@ public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
     }
 
     @Override
-    public void finishActivity() {
-
+    public boolean hasInternetAccess() {
+        return false;
     }
+
 }

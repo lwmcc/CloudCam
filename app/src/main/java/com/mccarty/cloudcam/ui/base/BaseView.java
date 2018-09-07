@@ -1,12 +1,7 @@
 package com.mccarty.cloudcam.ui.base;
 
-import android.content.Context;
-
-/**
- * Created by Larry McCarty on 3/26/2018.
- */
+import android.app.Application;
 
 public interface BaseView<T> {
-    void hasInternetConnection();
-    void finishActivity();
+    void checkInternetConnection(Application applicatin);
 }

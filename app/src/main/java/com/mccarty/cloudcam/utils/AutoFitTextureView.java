@@ -5,10 +5,6 @@ import android.util.AttributeSet;
 import android.view.TextureView;
 import android.view.View;
 
-/**
- * Created by Larry McCarty on 4/8/2018.
- */
-
 public class AutoFitTextureView extends TextureView {
     private int mRatioWidth = 0;
     private int mRatioHeight = 0;

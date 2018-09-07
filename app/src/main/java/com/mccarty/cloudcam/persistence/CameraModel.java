@@ -1,15 +1,14 @@
 package com.mccarty.cloudcam.persistence;
 
 import android.graphics.Matrix;
+import android.util.Size;
+import android.view.Surface;
 
 import com.mccarty.cloudcam.persistence.api.CameraAPI;
-import com.mccarty.cloudcam.utils.AutoFitTextureView;
 
 import javax.inject.Inject;
 
 public class CameraModel {
-
-    private static final String TAG = CameraModel.class.getSimpleName();
 
     private final CameraAPI cameraAPI;
 
@@ -18,31 +17,43 @@ public class CameraModel {
         this.cameraAPI = api;
     }
 
-
     public void snapPhoto() {
         // TODO:
         cameraAPI.lockFocus();
     }
 
-    public Matrix openCamera(int width, int height) {
-        return cameraAPI.openCamera(height, width);
+    public Matrix openCamera(int width, int height, int rotation, Surface surface,
+                             Size size) {
+        return cameraAPI.openCamera(height, width, rotation, surface, size);
     }
 
-    public void configureTransform(int width, int height) {
+   /* public void configureTransform(int width, int height) {
 
+    }*/
+
+    public void cameraSetup(int width, int height, int rotation) {
+        //cameraAPI.setCamera(width, height, rotation);
     }
 
-    public void cameraSetup(AutoFitTextureView textureView, int rotation) {
-        cameraAPI.setCamera(textureView, rotation);
-    }
-
-    public void switchCameraClicked(int width, int height) {
-        cameraAPI.switchCamera(width, height);
+    public void switchCameraClicked(int width, int height, int rotation, Surface surface,
+                                    Size size) {
+        cameraAPI.switchCamera(width, height, rotation, surface, size);
     }
 
     public void startThread() {
         cameraAPI.startBackgroundThread();
     }
 
+    public void closeCamera() {
+        cameraAPI.closeCamera();
+    }
+
+    public Size getPreviewSize() {
+        return cameraAPI.getPreviewSize();
+    }
+
+    public void stopBackgroundThread() {
+        cameraAPI.stopBackgroundThread();
+    }
 
 }

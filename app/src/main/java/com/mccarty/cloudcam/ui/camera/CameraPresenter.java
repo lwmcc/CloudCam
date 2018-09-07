@@ -1,15 +1,23 @@
 package com.mccarty.cloudcam.ui.camera;
 
-import android.view.Surface;
+import android.app.Activity;
+import android.util.Size;
 
 import com.mccarty.cloudcam.ui.base.BasePresenter;
 import com.mccarty.cloudcam.utils.AutoFitTextureView;
 
 public interface CameraPresenter extends BasePresenter<CameraView> {
-    void openCamera(int width, int height);
-    void configureTransform(int width, int height);
+    void openCamera(AutoFitTextureView textureView, Activity activity);
+
     void takePicture();
-    void switchCamera(int width, int height);
-    void cameraSetup(AutoFitTextureView textureView, int rotation);
+
+    void switchCamera(AutoFitTextureView textureView, Activity activity);
+
     void startThread();
+
+    Size getPreviewSize();
+
+    void setAspectRatio(Size size, Activity activity);
+
+    void stopBackgroundThread();
 }

@@ -8,6 +8,7 @@ import com.mccarty.cloudcam.persistence.CameraModel;
 import com.mccarty.cloudcam.persistence.api.CameraAPI;
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
 import com.mccarty.cloudcam.ui.camera.CameraPresenterImpl;
+import com.mccarty.cloudcam.utils.NetworkUtils;
 
 import java.io.File;
 
@@ -38,7 +39,13 @@ public class CameraPresenterModule {
     }
 
     @Provides
-    CameraPresenterImpl provideCameraPresenter(CameraModel cameraModel) {
-        return new CameraPresenterImpl(cameraModel);
+    NetworkUtils provideNetworkUtils(Application application) {
+        return new NetworkUtils(application);
+    }
+
+    @Provides
+    CameraPresenterImpl provideCameraPresenter(CameraModel cameraModel,
+                                               NetworkUtils networkUtils) {
+        return new CameraPresenterImpl(cameraModel, networkUtils);
     }
 }

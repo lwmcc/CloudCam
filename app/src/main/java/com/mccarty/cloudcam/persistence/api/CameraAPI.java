@@ -1,10 +1,5 @@
 package com.mccarty.cloudcam.persistence.api;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.DialogInterface;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -20,9 +15,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.Image;
 import android.media.ImageReader;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
@@ -32,12 +25,9 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
-import com.mccarty.cloudcam.utils.AutoFitTextureView;
+import com.mccarty.cloudcam.utils.ImageSaver;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,10 +35,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
 
 import javax.inject.Inject;
-
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CAMERA_FIRST_RUN;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.DEFAULT_CAMERA_ID;
 
@@ -65,8 +54,6 @@ public class CameraAPI {
     private CameraCaptureSession captureSession;
 
     private CaptureRequest previewRequest;
-
-    private Size previewSize;
 
     private ImageReader imageReader;
 
@@ -88,8 +75,6 @@ public class CameraAPI {
 
     private static final int MAX_PREVIEW_HEIGHT = 1080;
 
-    private int mState = STATE_PREVIEW;
-
     private int sensorOrientation;
 
     private int rotation;
@@ -100,15 +85,7 @@ public class CameraAPI {
 
     private int height;
 
-    private Size mPreviewSize;
-
-    private AutoFitTextureView textureView;
-
-    private CaptureRequest mPreviewRequest;
-
     private Semaphore cameraOpenCloseLock = new Semaphore(1);
-
-    private boolean mFlashSupported;
 
     private CaptureRequest.Builder previewRequestBuilder;
 
@@ -129,8 +106,6 @@ public class CameraAPI {
      * Conversion from screen rotation to JPEG orientation.
      */
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
-    private static final int REQUEST_CAMERA_PERMISSION = 1;
-    private static final String FRAGMENT_DIALOG = "dialog";
 
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -151,7 +126,7 @@ public class CameraAPI {
     /**
      * Stops the background thread and its {@link Handler}.
      */
-    private void stopBackgroundThread() {
+    public void stopBackgroundThread() {
         backgroundThread.quitSafely();
         try {
             backgroundThread.join();
@@ -169,41 +144,6 @@ public class CameraAPI {
             backgroundHandler.post(new ImageSaver(reader.acquireNextImage(), file));
         }
     };
-
-    private static class ImageSaver implements Runnable {
-        private final Image image;
-        private final File file;
-
-        ImageSaver(Image image, File file) {
-            this.image = image;
-            this.file = file;
-        }
-
-        @Override
-        public void run() {
-            ByteBuffer buffer = image.getPlanes()[0].getBuffer();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
-            FileOutputStream output = null;
-
-            try {
-                output = new FileOutputStream(file);
-                output.write(bytes);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                image.close();
-                if (null != output) {
-                    try {
-                        output.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-    }
 
     public void lockFocus() {
         try {
@@ -232,7 +172,7 @@ public class CameraAPI {
                 case STATE_WAITING_LOCK: {
                     Integer afState = result.get(CaptureResult.CONTROL_AF_STATE);
                     if (afState == null) {
-                        captureStillPicture(() -> getRotation());
+                        captureStillPicture();
                     } else if (CaptureResult.CONTROL_AF_STATE_FOCUSED_LOCKED == afState ||
                             CaptureResult.CONTROL_AF_STATE_NOT_FOCUSED_LOCKED == afState) {
                         // CONTROL_AE_STATE can be null on some devices
@@ -240,7 +180,7 @@ public class CameraAPI {
                         if (aeState == null ||
                                 aeState == CaptureResult.CONTROL_AE_STATE_CONVERGED) {
                             state = STATE_PICTURE_TAKEN;
-                            captureStillPicture(() -> getRotation());
+                            captureStillPicture();
                         } else {
                             runPrecaptureSequence();
                         }
@@ -262,18 +202,21 @@ public class CameraAPI {
                     Integer aeState = result.get(CaptureResult.CONTROL_AE_STATE);
                     if (aeState == null || aeState != CaptureResult.CONTROL_AE_STATE_PRECAPTURE) {
                         state = STATE_PICTURE_TAKEN;
-                        captureStillPicture(() -> getRotation());
+                        captureStillPicture();
                     }
                     break;
                 }
             }
         }
 
-
         @Override
         public void onCaptureProgressed(@NonNull CameraCaptureSession session,
                                         @NonNull CaptureRequest request,
                                         @NonNull CaptureResult partialResult) {
+            checkNotNull(session);
+            checkNotNull(request);
+            checkNotNull(partialResult);
+
             process(partialResult);
         }
 
@@ -281,19 +224,18 @@ public class CameraAPI {
         public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                        @NonNull CaptureRequest request,
                                        @NonNull TotalCaptureResult result) {
+            checkNotNull(session);
+            checkNotNull(request);
+            checkNotNull(result);
+
             process(result);
         }
 
     };
 
-    private void captureStillPicture(Supplier<Integer> rotation) {
+    private void captureStillPicture() {
 
         try {
-            // TODO: do something
-            /*final Activity activity = getActivity();
-            if (null == activity || null == cameraDevice) {
-                return;
-            }*/
             // This is the CaptureRequest.Builder that we use to take a picture.
             final CaptureRequest.Builder captureBuilder =
                     cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
@@ -305,7 +247,7 @@ public class CameraAPI {
             setAutoFlash(captureBuilder);
 
             // Orientation
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(() -> rotation.get()));
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation(rotation));
 
             CameraCaptureSession.CaptureCallback CaptureCallback
                     = new CameraCaptureSession.CaptureCallback() {
@@ -314,10 +256,6 @@ public class CameraAPI {
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
-                    // TODO: do something
-                    //Toast.makeText(getActivity(), "Saved: " + file, Toast.LENGTH_SHORT).show();
-
-                    Log.d(TAG, "*****" + file.toString());
                     unlockFocus();
                 }
             };
@@ -330,12 +268,12 @@ public class CameraAPI {
         }
     }
 
-    private int getOrientation(Supplier<Integer> rotation) {
+    private int getOrientation(int rotation) {
         // Sensor orientation is 90 for most devices, or 270 for some devices (eg. Nexus 5X)
         // We have to take that into account and rotate JPEG properly.
         // For devices with orientation of 90, we simply return our mapping from ORIENTATIONS.
         // For devices with orientation of 270, we need to rotate the JPEG 180 degrees.
-        return (ORIENTATIONS.get(rotation.get()) + sensorOrientation + 270) % 360;
+        return (ORIENTATIONS.get(rotation) + sensorOrientation + 270) % 360;
     }
 
     private void runPrecaptureSequence() {
@@ -358,101 +296,6 @@ public class CameraAPI {
                     CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
         }
     }
-
-    @SuppressWarnings("SuspiciousNameCombination")
-    private Size setupCamera(final int width, final int height) {
-        try {
-            //String[] ids = cameraManager.getCameraIdList();
-
-            if (prefs.getNumberofCameras() == CAMERA_FIRST_RUN) {
-                prefs.setCameraId(DEFAULT_CAMERA_ID);
-                prefs.setNumberOfCameras(cameraManager.getCameraIdList().length);
-            }
-            //for (String cameraId : ids) {
-            CameraCharacteristics characteristics
-                    = cameraManager.getCameraCharacteristics(prefs.getCameraId());
-
-
-            // TODO: change this
-            // We don't use a front facing camera in this sample.
-            //Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-
-                /*if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
-                    continue;
-                }*/
-
-            StreamConfigurationMap map = characteristics.get(
-                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-               /* if (map == null) {
-                    //continue;
-                    return;
-                }*/
-
-            Size largest = Collections.max(
-                    Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)),
-                    new CompareSizesByArea());
-            imageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
-                    ImageFormat.JPEG, /*maxImages*/ 2);
-            imageReader.setOnImageAvailableListener(
-                    onImageAvailableListener, backgroundHandler);
-
-            sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
-            boolean swappedDimensions = false;
-            switch (getRotation()) {
-                case Surface.ROTATION_0:
-                case Surface.ROTATION_180:
-                    if (sensorOrientation == 90 || sensorOrientation == 270) {
-                        swappedDimensions = true;
-                    }
-                    break;
-                case Surface.ROTATION_90:
-                case Surface.ROTATION_270:
-                    if (sensorOrientation == 0 || sensorOrientation == 180) {
-                        swappedDimensions = true;
-                    }
-                    break;
-                default:
-                    Log.e(TAG, "Display rotation is invalid: " + getRotation());
-            }
-
-            Point displaySize = new Point();
-
-            int rotatedPreviewWidth = width;
-            int rotatedPreviewHeight = height;
-            int maxPreviewWidth = displaySize.x;
-            int maxPreviewHeight = displaySize.y;
-
-            if (swappedDimensions) {
-                rotatedPreviewWidth = height;
-                rotatedPreviewHeight = width;
-                maxPreviewWidth = displaySize.y;
-                maxPreviewHeight = displaySize.x;
-            }
-
-            if (maxPreviewWidth > MAX_PREVIEW_WIDTH) {
-                maxPreviewWidth = MAX_PREVIEW_WIDTH;
-            }
-
-            if (maxPreviewHeight > MAX_PREVIEW_HEIGHT) {
-                maxPreviewHeight = MAX_PREVIEW_HEIGHT;
-            }
-
-            previewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                    rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
-                    maxPreviewHeight, largest);
-
-            Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
-            flashSupported = available == null ? false : available;
-            //}
-        } catch (CameraAccessException e) {
-            Log.e(TAG, "CameraAccessException: " + e.getMessage());
-        } catch (NullPointerException e) {
-            Log.e(TAG, "NullPointerException: " + e.getMessage());
-        }
-
-        return previewSize;
-    }
-
 
     static class CompareSizesByArea implements Comparator<Size> {
         @Override
@@ -480,9 +323,10 @@ public class CameraAPI {
         }
     }
 
-    private void createCameraPreviewSession(Surface surface) {
-        try {
+    private void createCameraPreviewSession(@NonNull Surface surface) {
+        checkNotNull(surface);
 
+        try {
             // We set up a CaptureRequest.Builder with the output Surface.
             previewRequestBuilder
                     = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
@@ -561,19 +405,18 @@ public class CameraAPI {
         }
     }
 
-    public Matrix openCamera(int width, int height) {
+    public Matrix openCamera(int width, int height, int rotation, Surface surface, Size size) {
+
         this.height = height;
         this.width = width;
+        this.rotation = rotation;
+        this.surface = surface;
 
-        Size s = setupCamera(width, height);
-        Matrix matrix = configureTransform(width, height, s);
+        Matrix matrix = configureTransform(width, height, size, rotation);
         try {
             if (!cameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
-
-            // TODO:
-            Log.d(TAG,"OPEN CAMERA: " + prefs.getCameraId());
 
             cameraManager.openCamera(prefs.getCameraId(), stateCallback, backgroundHandler);
         } catch (CameraAccessException e) {
@@ -582,8 +425,7 @@ public class CameraAPI {
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera opening.", e);
         } catch (SecurityException e) {
-            // This shouldn't happen because this is check in the camera fragment
-            //e.printStackTrace();
+            e.printStackTrace();
             Log.e(TAG, "CAMERA SECURITY ERROR: " + e.getMessage());
         } catch (Exception e) {
             Log.e(TAG, "**CAMERA EXCEPTION: " + e.getMessage());
@@ -592,27 +434,22 @@ public class CameraAPI {
         return matrix;
     }
 
-    private Matrix configureTransform(int width, int height, Size size) {
-
-        // TODO: do something here?
-        /*if (null == mTextureView || null == mPreviewSize || null == activity) {
-            return;
-        }*/
+    private Matrix configureTransform(int width, int height, Size size, int rotation) {
 
         Matrix matrix = new Matrix();
         RectF viewRect = new RectF(0, 0, width, height);
         RectF bufferRect = new RectF(0, 0, size.getHeight(), size.getWidth());
         float centerX = viewRect.centerX();
         float centerY = viewRect.centerY();
-        if (Surface.ROTATION_90 == getRotation() || Surface.ROTATION_270 == getRotation()) {
+        if (Surface.ROTATION_90 == rotation || Surface.ROTATION_270 == rotation) {
             bufferRect.offset(centerX - bufferRect.centerX(), centerY - bufferRect.centerY());
             matrix.setRectToRect(viewRect, bufferRect, Matrix.ScaleToFit.FILL);
             float scale = Math.max(
                     (float) height / size.getHeight(),
                     (float) width / size.getWidth());
             matrix.postScale(scale, scale, centerX, centerY);
-            matrix.postRotate(90 * (getRotation() - 2), centerX, centerY);
-        } else if (Surface.ROTATION_180 == getRotation()) {
+            matrix.postRotate(90 * (rotation - 2), centerX, centerY);
+        } else if (Surface.ROTATION_180 == rotation) {
             matrix.postRotate(180, centerX, centerY);
         }
         return matrix;
@@ -625,10 +462,13 @@ public class CameraAPI {
 
         @Override
         public void onOpened(@NonNull CameraDevice device) {
+            checkNotNull(device, "Camera Device Cannot Be Null");
+
             // This method is called when the camera is opened.  We start camera preview here.
             cameraOpenCloseLock.release();
             cameraDevice = device;
-            createCameraPreviewSession(getSurface());
+
+            createCameraPreviewSession(surface);
         }
 
         @Override
@@ -640,80 +480,29 @@ public class CameraAPI {
 
         @Override
         public void onError(@NonNull CameraDevice device, int error) {
+            checkNotNull(device, "Camera Device Cannot Be Null");
+
             cameraOpenCloseLock.release();
             device.close();
             cameraDevice = null;
-
-            // TODO: finish activity on error
-            /*Activity activity = getActivity();
-            if (null != activity) {
-                activity.finish();
-            }*/
         }
 
     };
 
-    // TODO: move to view
-
-    /**
-     * Shows an error message dialog.
-     */
-    public static class ErrorDialog extends DialogFragment {
-
-        private static final String ARG_MESSAGE = "message";
-
-        public static ErrorDialog newInstance(String message) {
-            ErrorDialog dialog = new ErrorDialog();
-            Bundle args = new Bundle();
-            args.putString(ARG_MESSAGE, message);
-            dialog.setArguments(args);
-            return dialog;
-        }
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Activity activity = getActivity();
-            return new AlertDialog.Builder(activity)
-                    .setMessage(getArguments().getString(ARG_MESSAGE))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            activity.finish();
-                        }
-                    })
-                    .create();
-        }
-
-    }
-
-    public int getRotation() {
+    private int getRotation() {
         return this.rotation;
     }
 
-    public void setSurface(AutoFitTextureView textureView) {
-        this.surface = new Surface(textureView.getSurfaceTexture());
-    }
+    public void switchCamera(@NonNull int width,@NonNull int height,@NonNull int rotation,
+                             @NonNull Surface surface, @NonNull Size size) {
+        checkNotNull(width);
+        checkNotNull(height);
+        checkNotNull(rotation);
+        checkNotNull(surface);
+        checkNotNull(size);
 
-    public Surface getSurface() {
-        return new Surface(this.textureView.getSurfaceTexture());
-    }
-
-    /**
-     * Must be set before camera is opened
-     *
-     * @param textureView
-     * @param rotation
-     */
-    public void setCamera(AutoFitTextureView textureView, int rotation) {
-        this.textureView = textureView;
-        this.rotation = rotation;
-    }
-
-    public void switchCamera(int width, int height) {
         changeCameraId();
-        closeCamera();
-        openCamera(width, height);
+        openCamera(width, height, rotation, surface, size);
     }
 
     private void changeCameraId() {
@@ -730,8 +519,6 @@ public class CameraAPI {
      * Closes the current {@link CameraDevice}.
      */
     public void closeCamera() {
-
-        Log.d(TAG,"CLOSE CAMERA");
         try {
             cameraOpenCloseLock.acquire();
             if (null != captureSession) {
@@ -751,6 +538,91 @@ public class CameraAPI {
         } finally {
             cameraOpenCloseLock.release();
         }
+    }
+
+    public Size getPreviewSize() {
+
+        StreamConfigurationMap map = null;
+        int rotatedPreviewWidth = 0;
+        int rotatedPreviewHeight = 0;
+        int maxPreviewWidth = 0;
+        int maxPreviewHeight = 0;
+        Size largest = null;
+
+        try {
+            if (prefs.getNumberofCameras() == CAMERA_FIRST_RUN) {
+                prefs.setCameraId(DEFAULT_CAMERA_ID);
+                prefs.setNumberOfCameras(cameraManager.getCameraIdList().length);
+            }
+
+            CameraCharacteristics characteristics
+                    = cameraManager.getCameraCharacteristics(prefs.getCameraId());
+
+            map = characteristics.get(
+                    CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+
+            largest = Collections.max(
+                    Arrays.asList(map.getOutputSizes(ImageFormat.JPEG)),
+                    new CompareSizesByArea());
+
+            imageReader = ImageReader.newInstance(largest.getWidth(), largest.getHeight(),
+                    ImageFormat.JPEG, /*maxImages*/ 2);
+            imageReader.setOnImageAvailableListener(
+                    onImageAvailableListener, backgroundHandler);
+
+            sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+
+            boolean swappedDimensions = false;
+            switch (rotation) {
+                case Surface.ROTATION_0:
+                case Surface.ROTATION_180:
+                    if (sensorOrientation == 90 || sensorOrientation == 270) {
+                        swappedDimensions = true;
+                    }
+                    break;
+                case Surface.ROTATION_90:
+                case Surface.ROTATION_270:
+                    if (sensorOrientation == 0 || sensorOrientation == 180) {
+                        swappedDimensions = true;
+                    }
+                    break;
+                default:
+                    Log.e(TAG, "Display rotation is invalid: " + getRotation());
+            }
+
+            Point displaySize = new Point();
+
+            rotatedPreviewWidth = width;
+            rotatedPreviewHeight = height;
+            maxPreviewWidth = displaySize.x;
+            maxPreviewHeight = displaySize.y;
+
+            if (swappedDimensions) {
+                rotatedPreviewWidth = height;
+                rotatedPreviewHeight = width;
+                maxPreviewWidth = displaySize.y;
+                maxPreviewHeight = displaySize.x;
+            }
+
+            if (maxPreviewWidth > MAX_PREVIEW_WIDTH) {
+                maxPreviewWidth = MAX_PREVIEW_WIDTH;
+            }
+
+            if (maxPreviewHeight > MAX_PREVIEW_HEIGHT) {
+                maxPreviewHeight = MAX_PREVIEW_HEIGHT;
+            }
+
+            // Check if the flash is supported.
+            Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
+            flashSupported = available == null ? false : available;
+
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+
+        return chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
+                rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
+                maxPreviewHeight, largest);
     }
 
 }

@@ -8,10 +8,6 @@ import android.view.Surface;
 
 import javax.inject.Inject;
 
-/**
- * Created by Larry McCarty on 4/8/2018.
- */
-
 public class ConfigurationTransform {
 
     private final int width;

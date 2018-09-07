@@ -1,32 +1,28 @@
 package com.mccarty.cloudcam.ui.camera;
 
+import android.app.Activity;
+import android.content.res.Configuration;
+import android.util.Size;
+import android.view.Surface;
+
 import com.mccarty.cloudcam.persistence.CameraModel;
 import com.mccarty.cloudcam.utils.AutoFitTextureView;
+import com.mccarty.cloudcam.utils.NetworkUtils;
 
 import javax.inject.Inject;
-
-import static dagger.internal.Preconditions.checkNotNull;
 
 public class CameraPresenterImpl implements CameraPresenter {
 
     private CameraView view;
+    // TODO: remove this use CameraAPI
     private final CameraModel model;
 
-    private static final String TAG = CameraPresenterImpl.class.getSimpleName();
+    private final NetworkUtils networkUtils;
 
     @Inject
-    public CameraPresenterImpl(CameraModel model) {
+    public CameraPresenterImpl(CameraModel model, NetworkUtils networkUtils) {
         this.model = model;
-    }
-
-    @Override
-    public void switchCamera(int width, int height) {
-        model.switchCameraClicked(width, height);
-    }
-
-    @Override
-    public void cameraSetup(AutoFitTextureView textureView, int rotation) {
-        model.cameraSetup(textureView, rotation);
+        this.networkUtils = networkUtils;
     }
 
     @Override
@@ -34,18 +30,38 @@ public class CameraPresenterImpl implements CameraPresenter {
         model.startThread();
     }
 
-    /**
-     * @param width
-     *      * @param height
-     */
     @Override
-    public void openCamera(int width, int height) {
-        view.setTransform(model.openCamera(width, height));
+    public Size getPreviewSize() {
+        return model.getPreviewSize();
     }
 
     @Override
-    public void configureTransform(int width, int height) {
-        model.configureTransform(width, height);
+    public void setAspectRatio(Size size, Activity activity) {
+        if (activity.getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_LANDSCAPE) {
+            view.setAspectRatioLandscape(size);
+        } else {
+            view.setAspectRatioPortrait(size);
+        }
+    }
+
+    @Override
+    public void openCamera(AutoFitTextureView textureView, Activity activity) {
+        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        Size size = getPreviewSize();
+        view.setTransform(model.openCamera(textureView.getWidth(), textureView.getHeight(),
+                rotation, new Surface(textureView.getSurfaceTexture()), size));
+        setAspectRatio(size, activity);
+    }
+
+    @Override
+    public void switchCamera(AutoFitTextureView textureView, Activity activity) {
+        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        model.closeCamera();
+        Size size = getPreviewSize();
+        model.switchCameraClicked(textureView.getWidth(), textureView.getHeight(),
+                rotation, new Surface(textureView.getSurfaceTexture()), size);
+        setAspectRatio(size, activity);
     }
 
     public void takePicture() {
@@ -59,13 +75,17 @@ public class CameraPresenterImpl implements CameraPresenter {
 
     @Override
     public void dropView() {
-        // TODO:
-
+        view = null;
     }
 
     @Override
-    public void finishActivity() {
-        view.finishActivity();
+    public boolean hasInternetAccess() {
+        return networkUtils.hasNetworkAccess();
+    }
+
+    @Override
+    public void stopBackgroundThread() {
+        model.stopBackgroundThread();
     }
 
 }

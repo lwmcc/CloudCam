@@ -3,6 +3,7 @@ package com.mccarty.cloudcam.ui.camera;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -15,9 +16,9 @@ import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,6 @@ import dagger.android.AndroidInjection;
 @ActivityScope
 public class CameraFragment extends Fragment implements CameraView {
 
-    private final static String TAG = CameraFragment.class.getSimpleName();
-
     @Inject
     CameraPresenterImpl presenter;
 
@@ -59,10 +58,6 @@ public class CameraFragment extends Fragment implements CameraView {
 
     public CameraFragment() {
         // Requires empty public constructor
-    }
-
-    public static CameraFragment newInstance() {
-        return new CameraFragment();
     }
 
     @Override
@@ -88,6 +83,8 @@ public class CameraFragment extends Fragment implements CameraView {
     public void onResume() {
         super.onResume();
 
+        Log.d("******","HAS INTERNET ACCESS: " + presenter.hasInternetAccess());
+
         presenter.takeView(this);
         if (textureView.isAvailable()) {
             if (!hasCameraPermission()) {
@@ -96,8 +93,7 @@ public class CameraFragment extends Fragment implements CameraView {
             }
 
             presenter.startThread();
-            presenter.cameraSetup(textureView, getRotation());
-            presenter.openCamera(textureView.getWidth(), textureView.getHeight());
+            presenter.openCamera(textureView, getActivity());
 
         } else {
             textureView.setSurfaceTextureListener(surfaceTextureListener);
@@ -107,6 +103,7 @@ public class CameraFragment extends Fragment implements CameraView {
     @Override
     public void onPause() {
         super.onPause();
+        presenter.stopBackgroundThread();
     }
 
     @Override
@@ -125,6 +122,7 @@ public class CameraFragment extends Fragment implements CameraView {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        presenter.dropView();
     }
 
     @OnClick(R.id.takeImageButton)
@@ -136,7 +134,7 @@ public class CameraFragment extends Fragment implements CameraView {
     @OnClick(R.id.switchCameraButton)
     @Override
     public void switchCameraButtonClicked() {
-        presenter.switchCamera(textureView.getWidth(), textureView.getHeight());
+        presenter.switchCamera(textureView, getActivity());
     }
 
     @Override
@@ -145,28 +143,20 @@ public class CameraFragment extends Fragment implements CameraView {
     }
 
     @Override
-    public void setAspectRatio(Size size) {
-        int orientation = getResources().getConfiguration().orientation;
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            //textureView.setAspectRatio(
-            //        size.getWidth(), size.getHeight());
-        } else {
-            //textureView.setAspectRatio(
-            //        size.getHeight(), size.getWidth());
-        }
+    public void setAspectRatioLandscape(Size size) {
+        textureView.setAspectRatio(
+                size.getWidth(), size.getHeight());
     }
 
     @Override
-    public void hasInternetConnection() {
-
+    public void setAspectRatioPortrait(Size size) {
+        textureView.setAspectRatio(
+                size.getHeight(), size.getWidth());
     }
 
     @Override
-    public void finishActivity() {
-        Activity activity = getActivity();
-        if (activity != null) {
-           // activity.finish();
-        }
+    public void checkInternetConnection(Application application) {
+        presenter.hasInternetAccess();
     }
 
     /**
@@ -184,8 +174,7 @@ public class CameraFragment extends Fragment implements CameraView {
             }
 
             presenter.startThread();
-            presenter.cameraSetup(textureView, getRotation());
-            presenter.openCamera(width, height);
+            presenter.openCamera(textureView, getActivity());
         }
 
         @Override
@@ -253,19 +242,4 @@ public class CameraFragment extends Fragment implements CameraView {
                 == PackageManager.PERMISSION_GRANTED;
     }
 
-    private int getRotation() {
-        return getActivity().getWindowManager().getDefaultDisplay().getRotation();
-    }
-
-    @Override
-    public Surface getOutputSurface(Size previewSize) {
-        SurfaceTexture texture = textureView.getSurfaceTexture();
-        assert texture != null;
-
-        // We configure the size of default buffer to be the size of camera preview we want.
-        texture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
-
-        // This is the output Surface we need to start preview.
-        return new Surface(texture);
-    }
 }

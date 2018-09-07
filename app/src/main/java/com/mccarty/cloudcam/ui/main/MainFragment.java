@@ -1,5 +1,6 @@
 package com.mccarty.cloudcam.ui.main;
 
+import android.app.Application;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,8 +15,6 @@ import com.mccarty.cloudcam.ui.camera.CameraActivity;
 import javax.inject.Inject;
 
 public class MainFragment extends Fragment implements MainView {
-
-    private static final String TAG = MainFragment.class.getSimpleName();
 
     @Inject
     MainPresenterImpl mainPresenter;
@@ -44,12 +43,8 @@ public class MainFragment extends Fragment implements MainView {
     }
 
     @Override
-    public void hasInternetConnection() {
+    public void checkInternetConnection(Application applicatin) {
 
     }
 
-    @Override
-    public void finishActivity() {
-
-    }
 }
