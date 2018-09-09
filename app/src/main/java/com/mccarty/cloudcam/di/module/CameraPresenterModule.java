@@ -4,11 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.hardware.camera2.CameraManager;
 
-import com.mccarty.cloudcam.persistence.CameraModel;
 import com.mccarty.cloudcam.persistence.api.CameraAPI;
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
 import com.mccarty.cloudcam.ui.camera.CameraPresenterImpl;
 import com.mccarty.cloudcam.utils.NetworkUtils;
+import com.mccarty.cloudcam.utils.UIUtils;
 
 import java.io.File;
 
@@ -20,7 +20,7 @@ public class CameraPresenterModule {
 
     @Provides
     File provideFile(Application application) {
-        return new File(application.getExternalFilesDir(null), "pic.jpg");
+        return new File(application.getExternalFilesDir(null), UIUtils.prependToImage());
     }
 
     @Provides
@@ -34,18 +34,12 @@ public class CameraPresenterModule {
     }
 
     @Provides
-    CameraModel provideCameraModel(CameraAPI api) {
-        return new CameraModel(api);
-    }
-
-    @Provides
     NetworkUtils provideNetworkUtils(Application application) {
         return new NetworkUtils(application);
     }
 
     @Provides
-    CameraPresenterImpl provideCameraPresenter(CameraModel cameraModel,
-                                               NetworkUtils networkUtils) {
-        return new CameraPresenterImpl(cameraModel, networkUtils);
+    CameraPresenterImpl provideCameraPresenter(CameraAPI cameraAPI, NetworkUtils networkUtils) {
+        return new CameraPresenterImpl(cameraAPI, networkUtils);
     }
 }

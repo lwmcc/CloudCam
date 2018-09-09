@@ -1,5 +1,6 @@
 package com.mccarty.cloudcam.persistence.api;
 
+import android.annotation.SuppressLint;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -37,6 +38,9 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import io.reactivex.Single;
+
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CAMERA_FIRST_RUN;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.DEFAULT_CAMERA_ID;
@@ -127,13 +131,15 @@ public class CameraAPI {
      * Stops the background thread and its {@link Handler}.
      */
     public void stopBackgroundThread() {
-        backgroundThread.quitSafely();
-        try {
-            backgroundThread.join();
-            backgroundThread = null;
-            backgroundHandler = null;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (backgroundThread != null) {
+            backgroundThread.quitSafely();
+            try {
+                backgroundThread.join();
+                backgroundThread = null;
+                backgroundHandler = null;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -418,7 +424,7 @@ public class CameraAPI {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
 
-            cameraManager.openCamera(prefs.getCameraId(), stateCallback, backgroundHandler);
+            cameraManager.openCamera(prefs.getCameraId(), stateCallback, null);
         } catch (CameraAccessException e) {
             Log.e(TAG, "OPEN CAMERA ERROR: " + e.getMessage());
             e.printStackTrace();
@@ -434,7 +440,7 @@ public class CameraAPI {
         return matrix;
     }
 
-    private Matrix configureTransform(int width, int height, Size size, int rotation) {
+    public Matrix configureTransform(int width, int height, Size size, int rotation) {
 
         Matrix matrix = new Matrix();
         RectF viewRect = new RectF(0, 0, width, height);
@@ -493,11 +499,8 @@ public class CameraAPI {
         return this.rotation;
     }
 
-    public void switchCamera(@NonNull int width,@NonNull int height,@NonNull int rotation,
+    public void switchCamera(int width, int height, int rotation,
                              @NonNull Surface surface, @NonNull Size size) {
-        checkNotNull(width);
-        checkNotNull(height);
-        checkNotNull(rotation);
         checkNotNull(surface);
         checkNotNull(size);
 
@@ -540,14 +543,16 @@ public class CameraAPI {
         }
     }
 
+    @SuppressLint("all")
     public Size getPreviewSize() {
 
-        StreamConfigurationMap map = null;
-        int rotatedPreviewWidth = 0;
-        int rotatedPreviewHeight = 0;
-        int maxPreviewWidth = 0;
-        int maxPreviewHeight = 0;
-        Size largest = null;
+        StreamConfigurationMap map;
+        int rotatedPreviewWidth;
+        int rotatedPreviewHeight;
+        int maxPreviewWidth;
+        int maxPreviewHeight;
+        Size largest;
+        Size size = null;
 
         try {
             if (prefs.getNumberofCameras() == CAMERA_FIRST_RUN) {
@@ -616,13 +621,15 @@ public class CameraAPI {
             Boolean available = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
             flashSupported = available == null ? false : available;
 
-        } catch (CameraAccessException e) {
+            size = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
+                    rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
+                    maxPreviewHeight, largest);
+
+        } catch (CameraAccessException | NullPointerException e) {
             e.printStackTrace();
         }
 
-        return chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
-                rotatedPreviewWidth, rotatedPreviewHeight, maxPreviewWidth,
-                maxPreviewHeight, largest);
+        return size;
     }
 
 }

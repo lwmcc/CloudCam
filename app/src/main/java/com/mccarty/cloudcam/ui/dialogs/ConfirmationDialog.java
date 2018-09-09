@@ -15,7 +15,6 @@ import com.mccarty.cloudcam.R;
 public class ConfirmationDialog extends DialogFragment {
 
     private static final int REQUEST_CAMERA_PERMISSION = 1;
-    private static final String FRAGMENT_DIALOG = "dialog";
 
     @NonNull
     @Override
@@ -23,23 +22,18 @@ public class ConfirmationDialog extends DialogFragment {
         final Fragment parent = getParentFragment();
         return new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.camera_request)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        parent.requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                REQUEST_CAMERA_PERMISSION);
-                    }
-                })
+                .setPositiveButton(android.R.string.cancel,
+                        ((DialogInterface dialog, int which) ->
+                                parent.requestPermissions(new String[]{Manifest.permission.CAMERA},
+                                        REQUEST_CAMERA_PERMISSION)
+                        ))
                 .setNegativeButton(android.R.string.cancel,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Activity activity = parent.getActivity();
-                                if (activity != null) {
-                                    activity.finish();
-                                }
+                        ((DialogInterface dialog, int which) -> {
+                            Activity activity = parent.getActivity();
+                            if (activity != null) {
+                                activity.finish();
                             }
-                        })
+                        }))
                 .create();
     }
 }

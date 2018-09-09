@@ -1,17 +1,15 @@
 package com.mccarty.cloudcam.utils;
 
-import android.content.Context;
-import android.widget.Toast;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import javax.inject.Inject;
-
-/**
- * Created by Larry McCarty on 4/8/2018.
- */
+import static com.mccarty.cloudcam.di.module.ModuleConstants.JPEG_EXTENSION;
 
 public class UIUtils {
-    public static void showToast(final String message, Context context) {
-        Toast.makeText(context,message, Toast.LENGTH_SHORT).show();
+    public static String prependToImage() {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
+        return now.format(formatter) + JPEG_EXTENSION;
     }
 
 }

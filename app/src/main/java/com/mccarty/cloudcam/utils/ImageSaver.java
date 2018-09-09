@@ -14,7 +14,6 @@ public class ImageSaver implements Runnable {
     private final Image image;
     private final File file;
 
-    @Inject
     public ImageSaver(Image image, File file) {
         this.image = image;
         this.file = file;

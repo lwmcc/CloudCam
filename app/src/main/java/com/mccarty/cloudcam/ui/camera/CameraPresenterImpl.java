@@ -5,7 +5,7 @@ import android.content.res.Configuration;
 import android.util.Size;
 import android.view.Surface;
 
-import com.mccarty.cloudcam.persistence.CameraModel;
+import com.mccarty.cloudcam.persistence.api.CameraAPI;
 import com.mccarty.cloudcam.utils.AutoFitTextureView;
 import com.mccarty.cloudcam.utils.NetworkUtils;
 
@@ -14,25 +14,25 @@ import javax.inject.Inject;
 public class CameraPresenterImpl implements CameraPresenter {
 
     private CameraView view;
-    // TODO: remove this use CameraAPI
-    private final CameraModel model;
+
+    private final CameraAPI cameraAPI;
 
     private final NetworkUtils networkUtils;
 
     @Inject
-    public CameraPresenterImpl(CameraModel model, NetworkUtils networkUtils) {
-        this.model = model;
+    public CameraPresenterImpl(CameraAPI cameraAPI, NetworkUtils networkUtils) {
+        this.cameraAPI = cameraAPI;
         this.networkUtils = networkUtils;
     }
 
     @Override
     public void startThread() {
-        model.startThread();
+        cameraAPI.startBackgroundThread();
     }
 
     @Override
     public Size getPreviewSize() {
-        return model.getPreviewSize();
+        return cameraAPI.getPreviewSize();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CameraPresenterImpl implements CameraPresenter {
     public void openCamera(AutoFitTextureView textureView, Activity activity) {
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         Size size = getPreviewSize();
-        view.setTransform(model.openCamera(textureView.getWidth(), textureView.getHeight(),
+        view.setTransform(cameraAPI.openCamera(textureView.getWidth(), textureView.getHeight(),
                 rotation, new Surface(textureView.getSurfaceTexture()), size));
         setAspectRatio(size, activity);
     }
@@ -57,15 +57,15 @@ public class CameraPresenterImpl implements CameraPresenter {
     @Override
     public void switchCamera(AutoFitTextureView textureView, Activity activity) {
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-        model.closeCamera();
+        cameraAPI.closeCamera();
         Size size = getPreviewSize();
-        model.switchCameraClicked(textureView.getWidth(), textureView.getHeight(),
+        cameraAPI.switchCamera(textureView.getWidth(), textureView.getHeight(),
                 rotation, new Surface(textureView.getSurfaceTexture()), size);
         setAspectRatio(size, activity);
     }
 
     public void takePicture() {
-        model.snapPhoto();
+        cameraAPI.lockFocus();
     }
 
     @Override
@@ -85,7 +85,12 @@ public class CameraPresenterImpl implements CameraPresenter {
 
     @Override
     public void stopBackgroundThread() {
-        model.stopBackgroundThread();
+        cameraAPI.stopBackgroundThread();
+    }
+
+    @Override
+    public void configureTransform(int width, int height, int rotation) {
+        cameraAPI.configureTransform(width, height, getPreviewSize(), rotation);
     }
 
 }

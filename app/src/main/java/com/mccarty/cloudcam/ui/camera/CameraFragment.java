@@ -1,22 +1,14 @@
 package com.mccarty.cloudcam.ui.camera;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.TextureView;
@@ -26,6 +18,7 @@ import android.widget.ImageButton;
 
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.di.component.ActivityScope;
+import com.mccarty.cloudcam.ui.dialogs.ConfirmationDialog;
 import com.mccarty.cloudcam.utils.AutoFitTextureView;
 
 import javax.inject.Inject;
@@ -74,17 +67,7 @@ public class CameraFragment extends Fragment implements CameraView {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
     public void onResume() {
-        super.onResume();
-
-        Log.d("******","HAS INTERNET ACCESS: " + presenter.hasInternetAccess());
-
         presenter.takeView(this);
         if (textureView.isAvailable()) {
             if (!hasCameraPermission()) {
@@ -98,12 +81,13 @@ public class CameraFragment extends Fragment implements CameraView {
         } else {
             textureView.setSurfaceTextureListener(surfaceTextureListener);
         }
+        super.onResume();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
         presenter.stopBackgroundThread();
+        super.onPause();
     }
 
     @Override
@@ -113,16 +97,10 @@ public class CameraFragment extends Fragment implements CameraView {
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        // mListener = null;
-    }
-
-    @Override
     public void onDestroyView() {
-        super.onDestroyView();
         unbinder.unbind();
         presenter.dropView();
+        super.onDestroyView();
     }
 
     @OnClick(R.id.takeImageButton)
@@ -179,7 +157,7 @@ public class CameraFragment extends Fragment implements CameraView {
 
         @Override
         public void onSurfaceTextureSizeChanged(SurfaceTexture texture, int width, int height) {
-            //configureTransform(width, height);
+            presenter.configureTransform(width, height, getActivity().getWindowManager().getDefaultDisplay().getRotation());
         }
 
         @Override
@@ -199,40 +177,6 @@ public class CameraFragment extends Fragment implements CameraView {
             new ConfirmationDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
         } else {
             requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
-        }
-    }
-
-    // TODO: move this
-
-    /**
-     * Shows OK/Cancel confirmation dialog about camera permission.
-     */
-    public static class ConfirmationDialog extends DialogFragment {
-
-        @NonNull
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Fragment parent = getParentFragment();
-            return new AlertDialog.Builder(getActivity())
-                    .setMessage(R.string.camera_request)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            parent.requestPermissions(new String[]{Manifest.permission.CAMERA},
-                                    REQUEST_CAMERA_PERMISSION);
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel,
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Activity activity = parent.getActivity();
-                                    if (activity != null) {
-                                        activity.finish();
-                                    }
-                                }
-                            })
-                    .create();
         }
     }
 
