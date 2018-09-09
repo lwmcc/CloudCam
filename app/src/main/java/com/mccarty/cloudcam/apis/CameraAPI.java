@@ -1,4 +1,4 @@
-package com.mccarty.cloudcam.persistence.api;
+package com.mccarty.cloudcam.apis;
 
 import android.annotation.SuppressLint;
 import android.graphics.ImageFormat;
@@ -38,8 +38,6 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import io.reactivex.Single;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CAMERA_FIRST_RUN;
@@ -268,7 +266,7 @@ public class CameraAPI {
 
             captureSession.stopRepeating();
             captureSession.abortCaptures();
-            captureSession.capture(captureBuilder.build(), CaptureCallback, null);
+            captureSession.capture(captureBuilder.build(), CaptureCallback, backgroundHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -424,7 +422,7 @@ public class CameraAPI {
                 throw new RuntimeException("Time out waiting to lock camera opening.");
             }
 
-            cameraManager.openCamera(prefs.getCameraId(), stateCallback, null);
+            cameraManager.openCamera(prefs.getCameraId(), stateCallback, backgroundHandler);
         } catch (CameraAccessException e) {
             Log.e(TAG, "OPEN CAMERA ERROR: " + e.getMessage());
             e.printStackTrace();
