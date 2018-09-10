@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.hardware.camera2.CameraManager;
 
-import com.mccarty.cloudcam.persistence.api.CameraAPI;
+import com.mccarty.cloudcam.apis.CameraAPI;
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
 import com.mccarty.cloudcam.ui.camera.CameraPresenterImpl;
 import com.mccarty.cloudcam.utils.NetworkUtils;

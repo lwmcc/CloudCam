@@ -264,9 +264,12 @@ public class CameraAPI {
                 }
             };
 
+            // TODO:
+            Log.d(TAG,"***** H: " + height + " W: " + width + " R: " + rotation);
+
             captureSession.stopRepeating();
             captureSession.abortCaptures();
-            captureSession.capture(captureBuilder.build(), CaptureCallback, backgroundHandler);
+            captureSession.capture(captureBuilder.build(), CaptureCallback, null);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
@@ -410,6 +413,10 @@ public class CameraAPI {
     }
 
     public Matrix openCamera(int width, int height, int rotation, Surface surface, Size size) {
+
+        // TODO:
+        Log.d(TAG,"***** H: " + height + " W: " + width + " R: " + rotation + " SH: " +
+                size.getHeight() + " SW:" + size.getWidth() );
 
         this.height = height;
         this.width = width;

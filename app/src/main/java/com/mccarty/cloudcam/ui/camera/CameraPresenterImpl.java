@@ -2,10 +2,11 @@ package com.mccarty.cloudcam.ui.camera;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 
-import com.mccarty.cloudcam.persistence.api.CameraAPI;
+import com.mccarty.cloudcam.apis.CameraAPI;
 import com.mccarty.cloudcam.utils.AutoFitTextureView;
 import com.mccarty.cloudcam.utils.NetworkUtils;
 
@@ -36,8 +37,8 @@ public class CameraPresenterImpl implements CameraPresenter {
     }
 
     @Override
-    public void setAspectRatio(Size size, Activity activity) {
-        if (activity.getResources().getConfiguration().orientation ==
+    public void setAspectRatio(Size size, int rotation) {
+        if (rotation ==
                 Configuration.ORIENTATION_LANDSCAPE) {
             view.setAspectRatioLandscape(size);
         } else {
@@ -46,22 +47,31 @@ public class CameraPresenterImpl implements CameraPresenter {
     }
 
     @Override
-    public void openCamera(AutoFitTextureView textureView, Activity activity) {
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+    public void openCamera(AutoFitTextureView textureView, int rotation) {
         Size size = getPreviewSize();
         view.setTransform(cameraAPI.openCamera(textureView.getWidth(), textureView.getHeight(),
                 rotation, new Surface(textureView.getSurfaceTexture()), size));
-        setAspectRatio(size, activity);
+
+        // TODO:
+        Log.d("PRESENTER","*****PRESENTER: " + rotation + "SIZE: "
+                + size.getWidth() + " " + size.getHeight());
+
+        setAspectRatio(size, rotation);
     }
 
     @Override
-    public void switchCamera(AutoFitTextureView textureView, Activity activity) {
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+    public void switchCamera(AutoFitTextureView textureView, int rotation) {
+
         cameraAPI.closeCamera();
         Size size = getPreviewSize();
         cameraAPI.switchCamera(textureView.getWidth(), textureView.getHeight(),
                 rotation, new Surface(textureView.getSurfaceTexture()), size);
-        setAspectRatio(size, activity);
+
+        // TODO:
+        Log.d("PRESENTER","*****PRESENTER: " + rotation + "SIZE: "
+                + size.getWidth() + " " + size.getHeight());
+
+        setAspectRatio(size, rotation);
     }
 
     public void takePicture() {

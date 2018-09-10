@@ -9,6 +9,7 @@ import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.TextureView;
@@ -68,6 +69,9 @@ public class CameraFragment extends Fragment implements CameraView {
 
     @Override
     public void onResume() {
+
+        Log.d("TAG", "GET ROTATION: " + String.valueOf(getActivity().getWindowManager().getDefaultDisplay().getRotation()));
+
         presenter.takeView(this);
         if (textureView.isAvailable()) {
             if (!hasCameraPermission()) {
@@ -76,7 +80,7 @@ public class CameraFragment extends Fragment implements CameraView {
             }
 
             presenter.startThread();
-            presenter.openCamera(textureView, getActivity());
+            presenter.openCamera(textureView, getActivity().getWindowManager().getDefaultDisplay().getRotation());
 
         } else {
             textureView.setSurfaceTextureListener(surfaceTextureListener);
@@ -112,7 +116,7 @@ public class CameraFragment extends Fragment implements CameraView {
     @OnClick(R.id.switchCameraButton)
     @Override
     public void switchCameraButtonClicked() {
-        presenter.switchCamera(textureView, getActivity());
+        presenter.switchCamera(textureView, getActivity().getWindowManager().getDefaultDisplay().getRotation());
     }
 
     @Override
@@ -152,7 +156,7 @@ public class CameraFragment extends Fragment implements CameraView {
             }
 
             presenter.startThread();
-            presenter.openCamera(textureView, getActivity());
+            presenter.openCamera(textureView, getActivity().getWindowManager().getDefaultDisplay().getRotation());
         }
 
         @Override
