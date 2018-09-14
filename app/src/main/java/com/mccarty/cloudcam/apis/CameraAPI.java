@@ -26,6 +26,8 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
+import com.mccarty.cloudcam.persistence.local.CloudCamDatabase;
+import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
 import com.mccarty.cloudcam.utils.ImageSaver;
 
 import java.io.File;
@@ -43,7 +45,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CAMERA_FIRST_RUN;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.DEFAULT_CAMERA_ID;
 
-public class CameraAPI {
+public class CameraAPI implements OnImageFileSaved {
 
     private static final String TAG = CameraAPI.class.getSimpleName();
 
@@ -52,6 +54,8 @@ public class CameraAPI {
     private final File file;
 
     private final AppPreferences prefs;
+
+    private final ImageDao imageDao;
 
     private CameraCaptureSession captureSession;
 
@@ -98,10 +102,11 @@ public class CameraAPI {
     private Surface surface;
 
     @Inject
-    public CameraAPI(CameraManager manager, File file, AppPreferences appPreferences) {
+    public CameraAPI(CameraManager manager, File file, AppPreferences appPreferences, ImageDao imageDao) {
         this.cameraManager = manager;
         this.file = file;
         this.prefs = appPreferences;
+        this.imageDao = imageDao;
     }
 
     /**
@@ -145,7 +150,7 @@ public class CameraAPI {
             = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
-            backgroundHandler.post(new ImageSaver(reader.acquireNextImage(), file));
+            backgroundHandler.post(new ImageSaver(reader.acquireNextImage(), file, imageDao));
         }
     };
 
@@ -265,7 +270,8 @@ public class CameraAPI {
             };
 
             // TODO:
-            Log.d(TAG,"***** H: " + height + " W: " + width + " R: " + rotation);
+            Log.d(TAG,"***** H: " + height + " W: " + width + " R: " + rotation +
+                    " DEV2: " + captureSession.getDevice());
 
             captureSession.stopRepeating();
             captureSession.abortCaptures();
@@ -635,6 +641,11 @@ public class CameraAPI {
         }
 
         return size;
+    }
+
+    @Override
+    public void imageFileSaved() {
+        Log.d(TAG,"****CALL BACK");
     }
 
 }

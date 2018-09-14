@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mccarty.cloudcam.ui.main.Main3ActivityFragment"
+    tools:context="com.mccarty.cloudcam.ui.main.MainFragment"
     tools:showIn="@layout/activity_main3">
 
     <TextView

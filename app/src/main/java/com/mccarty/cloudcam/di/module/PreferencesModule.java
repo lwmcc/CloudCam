@@ -1,11 +1,7 @@
 package com.mccarty.cloudcam.di.module;
 
 import android.app.Application;
-
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 

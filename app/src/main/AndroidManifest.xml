@@ -27,8 +27,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".ui.login.LoginActivity" />
         <activity
-            android:name=".ui.main.Main3Activity"
-            android:label="@string/title_activity_main3"
+            android:name=".ui.main.MainActivity"
+            android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

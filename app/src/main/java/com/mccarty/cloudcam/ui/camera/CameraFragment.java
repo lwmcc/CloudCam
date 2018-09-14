@@ -69,9 +69,6 @@ public class CameraFragment extends Fragment implements CameraView {
 
     @Override
     public void onResume() {
-
-        Log.d("TAG", "GET ROTATION: " + String.valueOf(getActivity().getWindowManager().getDefaultDisplay().getRotation()));
-
         presenter.takeView(this);
         if (textureView.isAvailable()) {
             if (!hasCameraPermission()) {
