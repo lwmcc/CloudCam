@@ -23,7 +23,7 @@ import dagger.android.AndroidInjection;
 public class MainActivity extends BaseActivity {
 
     //@Inject
-    //MainPresenter presenter;
+    //MainPresenterImpl presenter;
 
     @Inject
     Lazy<MainFragment> fragment;

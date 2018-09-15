@@ -2,17 +2,17 @@ package com.mccarty.cloudcam.di.module;
 
 import android.app.Application;
 
-import com.mccarty.cloudcam.utils.UIUtils;
-
 import java.io.File;
 
 import dagger.Module;
 import dagger.Provides;
 
+import static com.mccarty.cloudcam.apis.APIConstants.IMG_CLOUD_CAM;
+
 @Module
-public class FileModule {
+class FileModule {
     @Provides
     static File provideFile(Application application) {
-        return new File(application.getExternalFilesDir(null), UIUtils.prependToImage());
+        return new File(application.getExternalFilesDir(null), IMG_CLOUD_CAM);
     }
 }

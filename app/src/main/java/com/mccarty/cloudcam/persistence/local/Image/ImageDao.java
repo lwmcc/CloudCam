@@ -11,11 +11,11 @@ import java.util.List;
 @Dao
 public interface ImageDao {
 
-    @Query("SELECT * FROM imageEntity")
+    @Query("SELECT * FROM ImageEntity")
     List<ImageEntity> getAll();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertImage(ImageEntity image);
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insertImage(ImageEntity imageEntity);
 
     @Delete
     void delete(ImageEntity image);

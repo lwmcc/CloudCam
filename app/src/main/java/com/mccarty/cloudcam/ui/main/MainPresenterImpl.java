@@ -3,9 +3,11 @@ package com.mccarty.cloudcam.ui.main;
 import android.app.Activity;
 import android.util.Log;
 
+import com.mccarty.cloudcam.di.component.ActivityScope;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
-public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
+@ActivityScope
+public class MainPresenterImpl<V extends BaseView> implements MainContract.Presenter {
 
     private final static String TAG = MainPresenterImpl.class.getSimpleName();
 
@@ -19,7 +21,7 @@ public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
         this.view = view;
     }
 
-    @Override
+  /*  @Override
     public boolean hasInternetConnection() {
         return false;
     }
@@ -37,6 +39,11 @@ public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
     @Override
     public void takeView(Object view) {
 
+    }*/
+
+    @Override
+    public void takeView(MainContract.View view) {
+
     }
 
     @Override
@@ -49,4 +56,8 @@ public class MainPresenterImpl<V extends BaseView> implements MainPresenter {
         return false;
     }
 
+    @Override
+    public void getAllImages() {
+
+    }
 }

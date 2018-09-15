@@ -1,6 +1,7 @@
 package com.mccarty.cloudcam.apis;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -29,6 +30,7 @@ import com.mccarty.cloudcam.persistence.local.AppPreferences;
 import com.mccarty.cloudcam.persistence.local.CloudCamDatabase;
 import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
 import com.mccarty.cloudcam.utils.ImageSaver;
+import com.mccarty.cloudcam.utils.UIUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,25 +44,21 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.mccarty.cloudcam.apis.APIConstants.IMG_CLOUD_CAM;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CAMERA_FIRST_RUN;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.DEFAULT_CAMERA_ID;
 
-public class CameraAPI implements OnImageFileSaved {
+public class CameraAPI {
 
     private static final String TAG = CameraAPI.class.getSimpleName();
 
+    private final Application application;
     private final CameraManager cameraManager;
-
-    private final File file;
-
     private final AppPreferences prefs;
-
     private final ImageDao imageDao;
 
     private CameraCaptureSession captureSession;
-
     private CaptureRequest previewRequest;
-
     private ImageReader imageReader;
 
     private boolean flashSupported;
@@ -68,17 +66,11 @@ public class CameraAPI implements OnImageFileSaved {
     private CameraDevice cameraDevice;
 
     private static final int STATE_PREVIEW = 0;
-
     private static final int STATE_WAITING_LOCK = 1;
-
     private static final int STATE_WAITING_PRECAPTURE = 2;
-
     private static final int STATE_WAITING_NON_PRECAPTURE = 3;
-
     private static final int STATE_PICTURE_TAKEN = 4;
-
     private static final int MAX_PREVIEW_WIDTH = 1920;
-
     private static final int MAX_PREVIEW_HEIGHT = 1080;
 
     private int sensorOrientation;
@@ -88,7 +80,6 @@ public class CameraAPI implements OnImageFileSaved {
     private int state = STATE_PREVIEW;
 
     private int width;
-
     private int height;
 
     private Semaphore cameraOpenCloseLock = new Semaphore(1);
@@ -102,9 +93,9 @@ public class CameraAPI implements OnImageFileSaved {
     private Surface surface;
 
     @Inject
-    public CameraAPI(CameraManager manager, File file, AppPreferences appPreferences, ImageDao imageDao) {
+    public CameraAPI(Application application, CameraManager manager, AppPreferences appPreferences, ImageDao imageDao) {
+        this.application = application;
         this.cameraManager = manager;
-        this.file = file;
         this.prefs = appPreferences;
         this.imageDao = imageDao;
     }
@@ -150,7 +141,10 @@ public class CameraAPI implements OnImageFileSaved {
             = new ImageReader.OnImageAvailableListener() {
         @Override
         public void onImageAvailable(ImageReader reader) {
-            backgroundHandler.post(new ImageSaver(reader.acquireNextImage(), file, imageDao));
+            ImageSaver saver = new ImageSaver(reader.acquireNextImage(),
+                    new File(application.getExternalFilesDir(null), IMG_CLOUD_CAM + UIUtils.appendToImage()),
+                    imageDao);
+            saver.saveImage();
         }
     };
 
@@ -641,11 +635,6 @@ public class CameraAPI implements OnImageFileSaved {
         }
 
         return size;
-    }
-
-    @Override
-    public void imageFileSaved() {
-        Log.d(TAG,"****CALL BACK");
     }
 
 }

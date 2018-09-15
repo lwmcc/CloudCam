@@ -10,12 +10,10 @@ import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
 import com.mccarty.cloudcam.ui.camera.CameraPresenterImpl;
 import com.mccarty.cloudcam.utils.NetworkUtils;
 
-import java.io.File;
-
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {DatabaseModule.class, FileModule.class, NetworkModule.class})
+@Module(includes = {DatabaseModule.class, NetworkModule.class})
 public class CameraPresenterModule {
 
     @Provides
@@ -24,8 +22,9 @@ public class CameraPresenterModule {
     }
 
     @Provides
-    static CameraAPI provideCamera(CameraManager manager, File file, AppPreferences appPreferences, ImageDao imageDao) {
-        return new CameraAPI(manager, file, appPreferences, imageDao);
+    static CameraAPI provideCamera(Application application, CameraManager manager, AppPreferences appPreferences,
+                                   ImageDao imageDao) {
+        return new CameraAPI(application, manager, appPreferences, imageDao);
     }
 
     @Provides
