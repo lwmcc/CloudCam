@@ -9,12 +9,13 @@ import com.mccarty.cloudcam.ui.base.BaseActivity;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
 import dagger.android.AndroidInjection;
 
 public class CameraActivity extends BaseActivity {
 
     @Inject
-    CameraFragment cameraFragment;
+    Lazy<CameraFragment> fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +23,18 @@ public class CameraActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        FragmentManager manager = getFragmentManager();
-        FragmentTransaction trans = manager.beginTransaction();
+        CameraFragment cameraFragment =
+                (CameraFragment) getFragmentManager().findFragmentById(R.id.camera_fragment);
 
-        trans.add(R.id.camera_fragment, cameraFragment);
-        trans.commit();
+        if (cameraFragment == null) {
+            cameraFragment = fragment.get();
+
+            FragmentManager manager = getFragmentManager();
+            FragmentTransaction trans = manager.beginTransaction();
+
+            trans.add(R.id.camera_fragment, cameraFragment);
+            trans.commit();
+        }
     }
+
 }
