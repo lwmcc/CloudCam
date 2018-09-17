@@ -1,17 +1,22 @@
 package com.mccarty.cloudcam.di.module;
 
+import com.mccarty.cloudcam.model.MainModel;
+import com.mccarty.cloudcam.ui.main.MainContract;
 import com.mccarty.cloudcam.ui.main.MainPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by Larry McCarty on 7/25/2018.
- */
-
-@Module
+@Module(includes = {DatabaseModule.class, NetworkModule.class})
 public class MainPresenterModule {
+
     @Provides
-    MainPresenterImpl provideMainPresenter() { return new MainPresenterImpl();
+    static MainModel provideMainModel() {
+        return new MainModel();
+    }
+
+    @Provides
+    static MainPresenterImpl provideMainPresenter(MainModel mainModel) {
+        return new MainPresenterImpl(mainModel);
     }
 }
