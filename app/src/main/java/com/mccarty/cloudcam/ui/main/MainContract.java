@@ -4,10 +4,10 @@ import com.mccarty.cloudcam.ui.base.BasePresenter;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
 public interface MainContract {
-    interface View extends BaseView<Presenter> {
+    interface MainView extends BaseView<MainPresenter> {
         void loadImages();
     }
-    interface Presenter extends BasePresenter<View> {
+    interface MainPresenter extends BasePresenter<MainView> {
         void getAllImages();
     }
 }

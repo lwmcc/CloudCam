@@ -1,5 +1,6 @@
 package com.mccarty.cloudcam.persistence.local.Image;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface ImageDao {
 
     @Query("SELECT * FROM ImageEntity")
-    List<ImageEntity> getAll();
+    LiveData<List<ImageEntity>> getAll();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertImage(ImageEntity imageEntity);

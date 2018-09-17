@@ -9,7 +9,6 @@ import android.graphics.SurfaceTexture;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.TextureView;

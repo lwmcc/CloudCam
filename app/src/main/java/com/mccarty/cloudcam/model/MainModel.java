@@ -1,6 +1,8 @@
 package com.mccarty.cloudcam.model;
 
 
+import android.arch.lifecycle.LiveData;
+
 import com.mccarty.cloudcam.persistence.local.CloudCamDatabase;
 import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 
@@ -14,7 +16,7 @@ public class MainModel {
         this.database = cloudDatabase;
     }
 
-    public List<ImageEntity> getAllImages() {
+    public LiveData<List<ImageEntity>> getAllImages() {
         return database.imageDao().getAll();
     }
 }

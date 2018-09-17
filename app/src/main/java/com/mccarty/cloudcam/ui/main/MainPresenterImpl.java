@@ -1,13 +1,20 @@
 package com.mccarty.cloudcam.ui.main;
 
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.media.Image;
 import android.util.Log;
 
 import com.mccarty.cloudcam.di.component.ActivityScope;
 import com.mccarty.cloudcam.model.MainModel;
+import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import io.reactivex.Flowable;
 
 //@ActivityScope
 public class MainPresenterImpl implements MainContract.MainPresenter {
@@ -34,11 +41,15 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public boolean hasInternetAccess() {
+        // TODO:
         return false;
     }
 
     @Override
     public void getAllImages() {
-        System.out.print("GET ALL IMAGES");
+
+        LiveData<List<ImageEntity>> images = model.getAllImages();
+
+
     }
 }

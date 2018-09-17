@@ -1,19 +1,14 @@
 package com.mccarty.cloudcam.ui.main;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.base.BaseActivity;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
-
 import javax.inject.Inject;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,16 +33,15 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        MainFragment mainFragment =
-                (MainFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+        MainFragment mainFragment = (MainFragment) getFragmentManager().findFragmentById(R.id.main_fragment);
 
         if (mainFragment == null) {
             mainFragment = fragment.get();
 
-            FragmentManager manager = getSupportFragmentManager();
+            FragmentManager manager = getFragmentManager();
             FragmentTransaction trans = manager.beginTransaction();
             trans.add(R.id.main_fragment, mainFragment);
             trans.commit();

@@ -1,15 +1,11 @@
 package com.mccarty.cloudcam.di.module;
-
 import com.mccarty.cloudcam.ui.main.MainFragment;
-
 import dagger.Module;
-import dagger.Provides;
 
 @Module
-public class MainFragmentModule {
+public abstract class MainFragmentModule {
 
-    @Provides
-    MainFragment provideMainFragment() {
+    static MainFragment provideMainFragment() {
         return new MainFragment();
     }
 }

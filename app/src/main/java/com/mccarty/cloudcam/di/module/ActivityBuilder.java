@@ -5,15 +5,21 @@ import com.mccarty.cloudcam.di.component.FragmentScope;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
 import com.mccarty.cloudcam.ui.camera.CameraFragment;
 import com.mccarty.cloudcam.ui.main.MainActivity;
+import com.mccarty.cloudcam.ui.main.MainFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
 @Module
 public abstract class ActivityBuilder {
+
     @ActivityScope
-    @ContributesAndroidInjector(modules = MainFragmentModule.class)
+    @ContributesAndroidInjector(modules = {MainFragmentModule.class,  MainPresenterModule.class})
     abstract MainActivity mainActivity();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = MainPresenterModule.class)
+    abstract MainFragment mainFragment();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = CameraFragmentModule.class)
