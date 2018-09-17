@@ -1,6 +1,7 @@
 package com.mccarty.cloudcam.di.module;
 
 import com.mccarty.cloudcam.model.MainModel;
+import com.mccarty.cloudcam.persistence.local.CloudCamDatabase;
 import com.mccarty.cloudcam.ui.main.MainContract;
 import com.mccarty.cloudcam.ui.main.MainPresenterImpl;
 
@@ -11,8 +12,8 @@ import dagger.Provides;
 public class MainPresenterModule {
 
     @Provides
-    static MainModel provideMainModel() {
-        return new MainModel();
+    static MainModel provideMainModel(CloudCamDatabase cloudDatabase) {
+        return new MainModel(cloudDatabase);
     }
 
     @Provides
