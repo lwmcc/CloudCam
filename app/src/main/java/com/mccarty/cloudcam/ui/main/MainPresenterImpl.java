@@ -4,46 +4,27 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.mccarty.cloudcam.di.component.ActivityScope;
+import com.mccarty.cloudcam.model.MainModel;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
-@ActivityScope
-public class MainPresenterImpl<V extends BaseView> implements MainContract.Presenter {
+import javax.inject.Inject;
 
-    private final static String TAG = MainPresenterImpl.class.getSimpleName();
+//@ActivityScope
+public class MainPresenterImpl implements MainContract.MainPresenter {
 
-    private V view;
 
-    public V getView() {
-        return view;
+    private MainContract.MainView view;
+
+    private final MainModel model;
+
+    @Inject
+    public MainPresenterImpl(MainModel mainModel) {
+        this.model = mainModel;
     }
 
-    public void setView(V view) {
+    @Override
+    public void takeView(MainContract.MainView view) {
         this.view = view;
-    }
-
-  /*  @Override
-    public boolean hasInternetConnection() {
-        return false;
-    }
-
-    @Override
-    public int getNumbereOfCameras() {
-        return 0;
-    }
-
-    @Override
-    public void captureImage() {
-        Log.d(TAG,"CAPTURE IMAGE");
-    }
-
-    @Override
-    public void takeView(Object view) {
-
-    }*/
-
-    @Override
-    public void takeView(MainContract.View view) {
-
     }
 
     @Override
@@ -58,6 +39,6 @@ public class MainPresenterImpl<V extends BaseView> implements MainContract.Prese
 
     @Override
     public void getAllImages() {
-
+        System.out.print("GET ALL IMAGES");
     }
 }
