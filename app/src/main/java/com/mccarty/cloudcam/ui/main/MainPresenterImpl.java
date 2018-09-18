@@ -2,7 +2,9 @@ package com.mccarty.cloudcam.ui.main;
 
 import android.app.Activity;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.media.Image;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.mccarty.cloudcam.di.component.ActivityScope;
@@ -19,10 +21,9 @@ import io.reactivex.Flowable;
 //@ActivityScope
 public class MainPresenterImpl implements MainContract.MainPresenter {
 
-
     private MainContract.MainView view;
-
     private final MainModel model;
+    private Observer<List<ImageEntity>> observer;
 
     @Inject
     public MainPresenterImpl(MainModel mainModel) {
@@ -36,7 +37,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void dropView() {
-
+        view = null;
     }
 
     @Override
@@ -47,9 +48,16 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void getAllImages() {
+        observer = imageEntities -> {
+            imageEntities.stream().forEach(img -> {
+                Log.d("***** PRESENTER: ", "" + img.getImageName());
+            });
 
-        LiveData<List<ImageEntity>> images = model.getAllImages();
+            model.getAllImages().removeObserver(observer);
+        };
 
-
+        model.getAllImages().observeForever(observer);
     }
+
 }
+
