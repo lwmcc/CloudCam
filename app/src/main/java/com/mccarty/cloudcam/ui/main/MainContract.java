@@ -6,6 +6,7 @@ import com.mccarty.cloudcam.ui.base.BaseView;
 public interface MainContract {
     interface MainView extends BaseView<MainPresenter> {
         void loadImages();
+        void imageClicked();
     }
     interface MainPresenter extends BasePresenter<MainView> {
         void getAllImages();
