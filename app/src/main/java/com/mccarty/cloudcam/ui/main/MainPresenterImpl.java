@@ -59,5 +59,10 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         model.getAllImages().observeForever(observer);
     }
 
+    @Override
+    public void showImage() {
+        Log.d("TAG", "***** SHOW IMAGE");
+    }
+
 }
 
