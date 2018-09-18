@@ -10,5 +10,6 @@ public interface MainContract {
     }
     interface MainPresenter extends BasePresenter<MainView> {
         void getAllImages();
+        void showImage();
     }
 }
