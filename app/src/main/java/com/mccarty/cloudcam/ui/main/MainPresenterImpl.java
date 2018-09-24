@@ -12,6 +12,7 @@ import com.mccarty.cloudcam.model.MainModel;
 import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -48,12 +49,13 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void getAllImages() {
+        List<String> images = new ArrayList<>();
         observer = imageEntities -> {
             imageEntities.stream().forEach(img -> {
-                Log.d("***** PRESENTER: ", "" + img.getImageName());
+                images.add(img.getImagePath());
             });
-
             model.getAllImages().removeObserver(observer);
+            setImagesToView(images);
         };
 
         model.getAllImages().observeForever(observer);
@@ -62,6 +64,11 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     @Override
     public void showImage() {
         Log.d("TAG", "***** SHOW IMAGE");
+    }
+
+    @Override
+    public void setImagesToView(List<String> images) {
+        view.loadImages(images);
     }
 
 }
