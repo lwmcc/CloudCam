@@ -14,5 +14,5 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="15dp"
         android:contentDescription="@string/default_grid_image"
-        app:srcCompat="@drawable/default_sign_in_logo" />
+        app:srcCompat="@drawable/ic_panorama" />
 </RelativeLayout>
