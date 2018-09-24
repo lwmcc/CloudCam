@@ -7,7 +7,7 @@
     tools:context="com.mccarty.cloudcam.ui.main.MainFragment"
     tools:showIn="@layout/activity_main">
 
-    <GridView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/image_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

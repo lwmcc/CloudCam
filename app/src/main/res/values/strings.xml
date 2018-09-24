@@ -29,4 +29,5 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="take_photo_button">Take photo button</string>
     <string name="switch_camera_button">Switch camera button</string>
+    <string name="default_grid_image">Grid Image</string>
 </resources>
