@@ -3,14 +3,16 @@ package com.mccarty.cloudcam.ui.main;
 import android.app.Application;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.di.component.ActivityScope;
-import com.mccarty.cloudcam.ui.components.adapters.ImageAdapter;
+import com.mccarty.cloudcam.ui.components.ImageAdapter;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
     @Inject
     MainPresenterImpl presenter;
 
-    @BindView(R.id.imageGrid)
+    @BindView(R.id.image_grid)
     RecyclerView gridView;
 
     private Unbinder unbinder;
@@ -68,6 +70,7 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
     @Override
     public void loadImages(List<String> images) {
         gridView.setAdapter(new ImageAdapter(images));
+        gridView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
