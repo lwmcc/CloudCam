@@ -3,6 +3,7 @@ package com.mccarty.cloudcam.ui.main;
 import android.app.Application;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,7 +31,7 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
     MainPresenterImpl presenter;
 
     @BindView(R.id.image_grid)
-    RecyclerView gridView;
+    RecyclerView recyclerView;
 
     private Unbinder unbinder;
 
@@ -69,8 +70,12 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
 
     @Override
     public void loadImages(List<String> images) {
-        gridView.setAdapter(new ImageAdapter(images));
-        gridView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setAdapter(new ImageAdapter(images));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
     }
 
     @Override
