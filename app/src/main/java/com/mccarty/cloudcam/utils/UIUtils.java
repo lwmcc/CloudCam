@@ -14,11 +14,14 @@ public class UIUtils {
     }
 
     public static float getThumbnailHeight(Resources resources) {
+        int div = 3;
+        float percent = 0.93f;
+        float density = 160f;
         float dp;
         if (resources.getConfiguration().orientation == 1) {
-            dp = (resources.getDisplayMetrics().widthPixels / (resources.getDisplayMetrics().densityDpi / 160f) / 3) * 0.90f;
+            dp = (resources.getDisplayMetrics().widthPixels / (resources.getDisplayMetrics().densityDpi / density) / div) * percent;
         } else {
-            dp = (resources.getDisplayMetrics().heightPixels / (resources.getDisplayMetrics().densityDpi / 160f) / 3)  * 0.90f;
+            dp = (resources.getDisplayMetrics().heightPixels / (resources.getDisplayMetrics().densityDpi / density) / div)  * percent;
         }
 
         return dp;
