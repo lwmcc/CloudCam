@@ -1,5 +1,6 @@
 package com.mccarty.cloudcam.utils;
 
+import android.content.res.Resources;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -10,6 +11,17 @@ public class UIUtils {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
         return now.format(formatter) + JPEG_EXTENSION;
+    }
+
+    public static float getThumbnailHeight(Resources resources) {
+        float dp;
+        if (resources.getConfiguration().orientation == 1) {
+            dp = (resources.getDisplayMetrics().widthPixels / (resources.getDisplayMetrics().densityDpi / 160f) / 3) * 0.90f;
+        } else {
+            dp = (resources.getDisplayMetrics().heightPixels / (resources.getDisplayMetrics().densityDpi / 160f) / 3)  * 0.90f;
+        }
+
+        return dp;
     }
 
 }
