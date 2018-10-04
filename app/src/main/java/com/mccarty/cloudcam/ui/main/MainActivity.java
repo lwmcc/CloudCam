@@ -5,9 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.base.BaseActivity;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
+import com.mccarty.cloudcam.ui.login.LoginActivity;
+
 import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +51,27 @@ public class MainActivity extends BaseActivity {
             FragmentTransaction trans = manager.beginTransaction();
             trans.add(R.id.main_fragment, mainFragment);
             trans.commit();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sign_in:
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                return true;
+            case R.id.action_sign_out:
+                // TODO:
+                return true;
+                default:
+            return super.onOptionsItemSelected(item);
         }
     }
 
