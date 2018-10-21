@@ -17,11 +17,11 @@ public class UIUtils {
     public static int getThumbnailHeightPx(Resources resources) {
         float dp;
         if (resources.getConfiguration().orientation == 1) {
-            dp = resources.getDisplayMetrics().widthPixels / resources.getDisplayMetrics().density;
+            dp = (resources.getDisplayMetrics().widthPixels / resources.getDisplayMetrics().density) / 2.9f;
         } else {
             dp = resources.getDisplayMetrics().heightPixels / resources.getDisplayMetrics().density;
         }
-        return Math.round((dp * (resources.getDisplayMetrics().densityDpi / 160f)) / 3.07f);
+        return Math.round(dp * (resources.getDisplayMetrics().densityDpi / 160f));
     }
 
 }
