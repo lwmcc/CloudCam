@@ -14,12 +14,10 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         AWSMobileClient.getInstance().initialize(this, awsStartupResult -> {
-           SignInUI signInUI = (SignInUI) AWSMobileClient.getInstance().getClient(
-                    LoginActivity.this, SignInUI.class);
+            SignInUI signInUI = (SignInUI) AWSMobileClient.getInstance().getClient(
+                LoginActivity.this, SignInUI.class);
             signInUI.login(LoginActivity.this, MainActivity.class).execute();
-        });
-
+        }).execute();
     }
 }
