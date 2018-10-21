@@ -73,7 +73,7 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
         recyclerView.setAdapter(new ImageAdapter(images,
                 UIUtils.getThumbnailHeightPx(getActivity().getResources())));
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
-                getActivity().getResources().getConfiguration().orientation == 1 ? 3 : 6));
+                getActivity().getResources().getConfiguration().orientation == 1 ? 3 : 5));
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
