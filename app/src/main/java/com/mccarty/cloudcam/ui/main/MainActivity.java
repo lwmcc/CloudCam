@@ -1,14 +1,25 @@
 package com.mccarty.cloudcam.ui.main;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.mobile.auth.core.IdentityHandler;
+import com.amazonaws.mobile.auth.core.IdentityManager;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.AWSStartupHandler;
+import com.amazonaws.mobile.client.AWSStartupResult;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.base.BaseActivity;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
@@ -23,6 +34,8 @@ import dagger.android.AndroidInjection;
 
 public class MainActivity extends BaseActivity {
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     @Inject
     MainPresenterImpl presenter;
 
@@ -31,6 +44,8 @@ public class MainActivity extends BaseActivity {
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +67,20 @@ public class MainActivity extends BaseActivity {
             trans.add(R.id.main_fragment, mainFragment);
             trans.commit();
         }
+
+        AWSMobileClient.getInstance().initialize(this, awsStartupResult -> {
+            IdentityManager.getDefaultIdentityManager().getUserID(new IdentityHandler() {
+                @Override
+                public void onIdentityId(String identityId) {
+                    Log.d(TAG, "INIT AWS");
+                }
+
+                @Override
+                public void handleError(Exception exception) {
+                    Log.d(TAG, "INIT AWS ERROR: ", exception);
+                }
+            });
+        }).execute();
     }
 
     @Override
@@ -62,15 +91,26 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        this.menu = menu;
+        menu.getItem(0).setVisible(!IdentityManager.getDefaultIdentityManager().isUserSignedIn());
+        menu.getItem(1).setVisible(IdentityManager.getDefaultIdentityManager().isUserSignedIn());
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sign_in:
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 return true;
             case R.id.action_sign_out:
-                // TODO:
+                IdentityManager.getDefaultIdentityManager().signOut();
+                menu.getItem(0).setVisible(true);
+                menu.getItem(1).setVisible(IdentityManager.getDefaultIdentityManager().isUserSignedIn());
                 return true;
                 default:
+                    // TODO: do something
             return super.onOptionsItemSelected(item);
         }
     }
