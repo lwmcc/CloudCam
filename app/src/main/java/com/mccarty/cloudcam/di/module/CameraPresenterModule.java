@@ -4,6 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.hardware.camera2.CameraManager;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.mccarty.cloudcam.apis.CameraAPI;
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
 import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
@@ -13,7 +17,7 @@ import com.mccarty.cloudcam.utils.NetworkUtils;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = {DatabaseModule.class, NetworkModule.class})
+@Module(includes = {DatabaseModule.class, NetworkModule.class, AWSModule.class})
 public class CameraPresenterModule {
 
     @Provides
@@ -23,8 +27,8 @@ public class CameraPresenterModule {
 
     @Provides
     static CameraAPI provideCamera(Application application, CameraManager manager, AppPreferences appPreferences,
-                                   ImageDao imageDao) {
-        return new CameraAPI(application, manager, appPreferences, imageDao);
+                                   ImageDao imageDao, NetworkUtils networkUtils, TransferUtility transferUtility, CognitoUserPool cognitoUserPool) {
+        return new CameraAPI(application, manager, appPreferences, imageDao, networkUtils, transferUtility, cognitoUserPool);
     }
 
     @Provides
