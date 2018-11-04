@@ -19,5 +19,5 @@ public class LoginActivity extends Activity {
                 LoginActivity.this, SignInUI.class);
             signInUI.login(LoginActivity.this, MainActivity.class).execute();
         }).execute();
-    }
+   }
 }
