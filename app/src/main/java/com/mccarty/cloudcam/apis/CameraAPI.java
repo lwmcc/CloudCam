@@ -26,10 +26,13 @@ import android.util.Size;
 import android.util.SparseIntArray;
 import android.view.Surface;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
-import com.mccarty.cloudcam.persistence.local.CloudCamDatabase;
 import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
 import com.mccarty.cloudcam.utils.ImageSaver;
+import com.mccarty.cloudcam.utils.NetworkUtils;
 import com.mccarty.cloudcam.utils.UIUtils;
 
 import java.io.File;
@@ -44,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.mccarty.cloudcam.apis.APIConstants.IMG_CLOUD_CAM;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CAMERA_FIRST_RUN;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.DEFAULT_CAMERA_ID;
 
@@ -56,6 +58,10 @@ public class CameraAPI {
     private final CameraManager cameraManager;
     private final AppPreferences prefs;
     private final ImageDao imageDao;
+    private final NetworkUtils networkUtils;
+    private final TransferUtility transferUtility;
+    private final CognitoUserPool cognitoUserPool;
+    //private final AmazonDynamoDBClient dynamoDBClient;
 
     private CameraCaptureSession captureSession;
     private CaptureRequest previewRequest;
@@ -93,11 +99,16 @@ public class CameraAPI {
     private Surface surface;
 
     @Inject
-    public CameraAPI(Application application, CameraManager manager, AppPreferences appPreferences, ImageDao imageDao) {
+    public CameraAPI(Application application, CameraManager manager, AppPreferences appPreferences,
+                     ImageDao imageDao, NetworkUtils networkUtils, TransferUtility transferUtility, CognitoUserPool cognitoUserPool) {
         this.application = application;
         this.cameraManager = manager;
         this.prefs = appPreferences;
         this.imageDao = imageDao;
+        this.networkUtils = networkUtils;
+        this.transferUtility = transferUtility;
+        this.cognitoUserPool = cognitoUserPool;
+        AWSMobileClient.getInstance().initialize(application);
     }
 
     /**
@@ -142,8 +153,8 @@ public class CameraAPI {
         @Override
         public void onImageAvailable(ImageReader reader) {
             ImageSaver saver = new ImageSaver(reader.acquireNextImage(),
-                    new File(application.getExternalFilesDir(null), IMG_CLOUD_CAM + UIUtils.appendToImage()),
-                    imageDao);
+                    new File(application.getExternalFilesDir(null), UIUtils.imageUUID()),
+                    imageDao, networkUtils, transferUtility, cognitoUserPool);
             saver.saveImage();
         }
     };
@@ -262,10 +273,6 @@ public class CameraAPI {
                     unlockFocus();
                 }
             };
-
-            // TODO:
-            Log.d(TAG,"***** H: " + height + " W: " + width + " R: " + rotation +
-                    " DEV2: " + captureSession.getDevice());
 
             captureSession.stopRepeating();
             captureSession.abortCaptures();
