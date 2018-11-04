@@ -3,11 +3,10 @@ package com.mccarty.cloudcam.di.component;
 import android.app.Application;
 
 import com.mccarty.cloudcam.CloudCamApp;
+import com.mccarty.cloudcam.di.module.AWSModule;
 import com.mccarty.cloudcam.di.module.ActivityBuilder;
 import com.mccarty.cloudcam.di.module.AppModule;
 import com.mccarty.cloudcam.di.module.CameraPresenterModule;
-import com.mccarty.cloudcam.di.module.MainFragmentModule;
-import com.mccarty.cloudcam.di.module.MainPresenterModule;
 import com.mccarty.cloudcam.di.module.PreferencesModule;
 import javax.inject.Singleton;
 
