@@ -4,6 +4,8 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.base.BaseActivity;
 
