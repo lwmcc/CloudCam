@@ -46,6 +46,7 @@ repositories {
 final DAGGER_VERSION = '2.15'
 final BUTTERKNIFE_VERSION = '8.8.1'
 final GLIDE_VERSION = '4.8.0'
+final AWS_VERSION = '2.7.0'
 
 dependencies {
     // Dagger
@@ -56,20 +57,24 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-android-processor:${DAGGER_VERSION}"
     // AWS
     compile 'com.android.support:multidex:1.0.0'
-    compile 'com.amazonaws:aws-android-sdk-core:2.7.0'
-    //compile 'com.amazonaws:aws-android-sdk-mobile-client:2.7.0'
-    compile 'com.amazonaws:aws-android-sdk-auth-core:2.7.0'
-    compile 'com.amazonaws:aws-android-sdk-pinpoint:2.7.0'
-    compile 'com.amazonaws:aws-android-sdk-auth-ui:2.7.0'
-    compile 'com.amazonaws:aws-android-sdk-auth-userpools:2.7.0'
-    compile 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.7.0'
+    compile "com.amazonaws:aws-android-sdk-core:${AWS_VERSION}"
+    compile "com.amazonaws:aws-android-sdk-mobile-client:${AWS_VERSION}"
+    compile "com.amazonaws:aws-android-sdk-auth-core:${AWS_VERSION}"
+    compile "com.amazonaws:aws-android-sdk-pinpoint:${AWS_VERSION}"
+    compile "com.amazonaws:aws-android-sdk-auth-ui:${AWS_VERSION}"
+    compile "com.amazonaws:aws-android-sdk-auth-userpools:${AWS_VERSION}"
+    compile "com.amazonaws:aws-android-sdk-cognitoidentityprovider:${AWS_VERSION}"
+    compile "com.amazonaws:aws-android-sdk-ddb:${AWS_VERSION}"
+    compile "com.amazonaws:aws-android-sdk-ddb-document:${AWS_VERSION}"
+    implementation "com.amazonaws:aws-android-sdk-s3:${AWS_VERSION}"
     implementation 'com.android.support:cardview-v7:27.+'
+    implementation "com.amazonaws:aws-android-sdk-ddb-mapper:${AWS_VERSION}"
 
     // RX Java
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxjava:2.0.8'
 
-    implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.7.0') { transitive = true }
+    implementation ("com.amazonaws:aws-android-sdk-mobile-client:${AWS_VERSION}") { transitive = true }
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
