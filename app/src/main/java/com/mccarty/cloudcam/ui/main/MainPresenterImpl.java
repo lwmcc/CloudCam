@@ -10,6 +10,7 @@ import android.util.Log;
 import com.mccarty.cloudcam.di.component.ActivityScope;
 import com.mccarty.cloudcam.model.MainModel;
 import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
+import com.mccarty.cloudcam.persistence.remote.image.RemoteImageDao;
 import com.mccarty.cloudcam.ui.base.BaseView;
 
 import java.util.ArrayList;
@@ -55,7 +56,9 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
                 images.add(img.getImagePath());
             });
             model.getAllImages().removeObserver(observer);
-            setImagesToView(images);
+            // TOOD: testing
+            List<String> images2 = new ArrayList<>();
+            setImagesToView(images2);
         };
 
         model.getAllImages().observeForever(observer);
@@ -68,8 +71,14 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void setImagesToView(List<String> images) {
-        view.loadImages(images);
+
+        if (!images.isEmpty()) {
+            Log.d("", "LIST NOT EMPTY");
+            view.loadImages(images);
+        } else {
+            Log.d("", "LIST IS EMPTY");
+            model.scanForRemoteImages();
+        }
     }
 
 }
-
