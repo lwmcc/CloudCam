@@ -1,31 +1,27 @@
 package com.mccarty.cloudcam.ui.main;
 
-import android.app.Activity;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
-import android.media.Image;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.mccarty.cloudcam.di.component.ActivityScope;
 import com.mccarty.cloudcam.model.MainModel;
 import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
-import com.mccarty.cloudcam.persistence.remote.image.RemoteImageDao;
-import com.mccarty.cloudcam.ui.base.BaseView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 //@ActivityScope
 public class MainPresenterImpl implements MainContract.MainPresenter {
 
     private MainContract.MainView view;
     private final MainModel model;
-    private Observer<List<ImageEntity>> observer;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     @Inject
     public MainPresenterImpl(MainModel mainModel) {
@@ -45,40 +41,47 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     @Override
     public boolean hasInternetAccess() {
         // TODO:
-        return false;
+        return true;
     }
 
     @Override
     public void getAllImages() {
-        List<String> images = new ArrayList<>();
-        observer = imageEntities -> {
-            imageEntities.stream().forEach(img -> {
-                images.add(img.getImagePath());
-            });
-            model.getAllImages().removeObserver(observer);
-            // TOOD: testing
-            List<String> images2 = new ArrayList<>();
-            setImagesToView(images2);
-        };
+        Single.create((SingleOnSubscribe<List<ImageEntity>>) e -> e.onSuccess(model.getAllImages()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<List<ImageEntity>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
 
-        model.getAllImages().observeForever(observer);
+                    @Override
+                    public void onSuccess(List<ImageEntity> imageEntities) {
+                        setImagesToView(imageEntities);
+                        compositeDisposable.clear();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        // TODO: log this
+                    }
+                });
     }
 
     @Override
     public void showImage() {
-        Log.d("TAG", "***** SHOW IMAGE");
+        Log.d("TAG", "***** SHOW IMAGE ON CLICK");
     }
 
     @Override
-    public void setImagesToView(List<String> images) {
-
+    public void setImagesToView(List<ImageEntity> images) {
         if (!images.isEmpty()) {
-            Log.d("", "LIST NOT EMPTY");
             view.loadImages(images);
         } else {
-            Log.d("", "LIST IS EMPTY");
             model.scanForRemoteImages();
+            // TODO: add remote images to db
+            // load images from db
+
         }
     }
-
 }

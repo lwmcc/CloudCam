@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.di.component.ActivityScope;
+import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 import com.mccarty.cloudcam.ui.components.ImageAdapter;
 import com.mccarty.cloudcam.utils.UIUtils;
 
@@ -56,6 +57,8 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
 
     @Override
     public void onResume() {
+        System.out.println("ON RESUME");
+
         presenter.takeView(this);
         presenter.getAllImages();
         super.onResume();
@@ -69,7 +72,8 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
     }
 
     @Override
-    public void loadImages(List<String> images) {
+    public void loadImages(List<ImageEntity> images) {
+        System.out.println("***** MAIN");
         recyclerView.setAdapter(new ImageAdapter(images,
                 UIUtils.getThumbnailHeightPx(getActivity().getResources())));
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
@@ -78,6 +82,11 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+    }
+
+    @Override
+    public void downloadRemoteImages() {
+
     }
 
     @Override
