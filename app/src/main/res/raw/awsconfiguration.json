@@ -20,6 +20,17 @@
       "Region": "us-east-1"
     }
   },
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "cloudcam-userfiles-mobilehub-1277855607",
+      "Region": "us-east-1"
+    }
+  },
+  "DynamoDBObjectMapper": {
+    "Default": {
+      "Region": "us-east-1"
+    }
+  },
   "PinpointAnalytics": {
     "Default": {
       "AppId": "ff780ef08b934c0493deb27df48d1ed9",
@@ -28,6 +39,12 @@
   },
   "PinpointTargeting": {
     "Default": {
+      "Region": "us-east-1"
+    }
+  },
+  "UserFileManager": {
+    "Default": {
+      "Bucket": "cloudcam-userfiles-mobilehub-1277855607",
       "Region": "us-east-1"
     }
   }

@@ -5,7 +5,6 @@ import android.util.Log;
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobileconnectors.dynamodbv2.document.Table;
 import com.amazonaws.mobileconnectors.dynamodbv2.document.datatype.Document;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ScanRequest;
@@ -18,10 +17,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.mccarty.cloudcam.utils.Constants.IMAGES_TABLE;
-
-/**
- * Created by Larry McCarty on 11/3/2018.
- */
 
 public class RemoteImageDao implements RemoteDao {
     @Override
@@ -49,9 +44,7 @@ public class RemoteImageDao implements RemoteDao {
             ScanResult scanResult = dbClient.scan(scanRequest);
 
             for (Map<String, AttributeValue> items : scanResult.getItems()) {
-
-                Map<String, AttributeValue> item = items;
-                item.forEach((k, v) -> Log.d("", "ITEMSSSS: " + v.getS()));
+                items.forEach((k, v) -> Log.d("", "ITEMSSSS: " + v.getS()));
             }
         });
         observable.subscribeOn(Schedulers.io()).

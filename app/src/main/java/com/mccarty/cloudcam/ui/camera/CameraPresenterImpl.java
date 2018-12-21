@@ -51,11 +51,6 @@ public class CameraPresenterImpl implements CameraPresenter {
         Size size = getPreviewSize();
         view.setTransform(cameraAPI.openCamera(textureView.getWidth(), textureView.getHeight(),
                 rotation, new Surface(textureView.getSurfaceTexture()), size));
-
-        // TODO:
-        Log.d("PRESENTER","*****PRESENTER: " + rotation + "SIZE: "
-                + size.getWidth() + " " + size.getHeight());
-
         setAspectRatio(size, rotation);
     }
 
@@ -66,11 +61,6 @@ public class CameraPresenterImpl implements CameraPresenter {
         Size size = getPreviewSize();
         cameraAPI.switchCamera(textureView.getWidth(), textureView.getHeight(),
                 rotation, new Surface(textureView.getSurfaceTexture()), size);
-
-        // TODO:
-        Log.d("PRESENTER","*****PRESENTER: " + rotation + "SIZE: "
-                + size.getWidth() + " " + size.getHeight());
-
         setAspectRatio(size, rotation);
     }
 

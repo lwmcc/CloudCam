@@ -92,6 +92,7 @@ import com.amazonaws.services.dynamodbv2.model.WriteRequest;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.apis.AWSDb;
+import com.mccarty.cloudcam.persistence.remote.image.RemoteImageDao;
 
 import java.util.List;
 import java.util.Map;
@@ -128,6 +129,11 @@ public class AWSModule {
     @Provides
     static CognitoUserPool providedCognitoUserPool(Application application) {
         return new CognitoUserPool(application,  AWSMobileClient.getInstance().getConfiguration())  ;
+    }
+
+    @Provides
+    static RemoteImageDao provideRemoteImageDao() {
+        return new RemoteImageDao();
     }
 
 }

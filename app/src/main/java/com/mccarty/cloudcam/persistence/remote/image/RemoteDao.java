@@ -8,4 +8,5 @@ import com.amazonaws.mobileconnectors.dynamodbv2.document.datatype.Document;
 
 public interface RemoteDao {
     void saveImage(Document document);
+    void getImages();
 }

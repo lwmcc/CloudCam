@@ -7,13 +7,15 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.mccarty.cloudcam.R;
+import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
+
 import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
-    private List<String> data;
+    private List<ImageEntity> data;
     private int thumbSize;
 
-    public ImageAdapter(List<String> data, int thumbSize) {
+    public ImageAdapter(List<ImageEntity> data, int thumbSize) {
         this.data = data;
         this.thumbSize = thumbSize;
     }
@@ -35,7 +37,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Glide.with(holder.image).load(data.get(position)).
+        Glide.with(holder.image).load(data.get(position).getImagePath()).
                 apply(new RequestOptions().override(thumbSize, thumbSize).
                 centerCrop().placeholder(R.drawable.ic_panorama)).
                 into(holder.image);

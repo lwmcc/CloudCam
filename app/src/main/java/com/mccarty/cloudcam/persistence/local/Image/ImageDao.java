@@ -9,11 +9,13 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Single;
+
 @Dao
 public interface ImageDao {
 
     @Query("SELECT * FROM ImageEntity")
-    LiveData<List<ImageEntity>> getAll();
+    List<ImageEntity> getAll();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertImage(ImageEntity imageEntity);

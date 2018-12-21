@@ -31,6 +31,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.mccarty.cloudcam.persistence.local.AppPreferences;
 import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
+import com.mccarty.cloudcam.persistence.remote.image.RemoteImageDao;
 import com.mccarty.cloudcam.utils.ImageSaver;
 import com.mccarty.cloudcam.utils.NetworkUtils;
 import com.mccarty.cloudcam.utils.UIUtils;
@@ -58,10 +59,10 @@ public class CameraAPI {
     private final CameraManager cameraManager;
     private final AppPreferences prefs;
     private final ImageDao imageDao;
+    private final RemoteImageDao remoteImageDao;
     private final NetworkUtils networkUtils;
     private final TransferUtility transferUtility;
     private final CognitoUserPool cognitoUserPool;
-    //private final AmazonDynamoDBClient dynamoDBClient;
 
     private CameraCaptureSession captureSession;
     private CaptureRequest previewRequest;
@@ -100,11 +101,13 @@ public class CameraAPI {
 
     @Inject
     public CameraAPI(Application application, CameraManager manager, AppPreferences appPreferences,
-                     ImageDao imageDao, NetworkUtils networkUtils, TransferUtility transferUtility, CognitoUserPool cognitoUserPool) {
+                     ImageDao imageDao, RemoteImageDao remoteImageDao, NetworkUtils networkUtils,
+                     TransferUtility transferUtility, CognitoUserPool cognitoUserPool) {
         this.application = application;
         this.cameraManager = manager;
         this.prefs = appPreferences;
         this.imageDao = imageDao;
+        this.remoteImageDao = remoteImageDao;
         this.networkUtils = networkUtils;
         this.transferUtility = transferUtility;
         this.cognitoUserPool = cognitoUserPool;
@@ -154,7 +157,7 @@ public class CameraAPI {
         public void onImageAvailable(ImageReader reader) {
             ImageSaver saver = new ImageSaver(reader.acquireNextImage(),
                     new File(application.getExternalFilesDir(null), UIUtils.imageUUID()),
-                    imageDao, networkUtils, transferUtility, cognitoUserPool);
+                    imageDao, remoteImageDao, networkUtils, transferUtility, cognitoUserPool);
             saver.saveImage();
         }
     };
@@ -422,8 +425,8 @@ public class CameraAPI {
     public Matrix openCamera(int width, int height, int rotation, Surface surface, Size size) {
 
         // TODO:
-        Log.d(TAG,"***** H: " + height + " W: " + width + " R: " + rotation + " SH: " +
-                size.getHeight() + " SW:" + size.getWidth() );
+        Log.d(TAG, "***** H: " + height + " W: " + width + " R: " + rotation + " SH: " +
+                size.getHeight() + " SW:" + size.getWidth());
 
         this.height = height;
         this.width = width;
