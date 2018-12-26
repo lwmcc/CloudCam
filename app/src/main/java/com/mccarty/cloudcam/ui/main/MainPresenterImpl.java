@@ -57,8 +57,9 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
                     @Override
                     public void onSuccess(List<ImageEntity> imageEntities) {
-                        setImagesToView(imageEntities);
-                        compositeDisposable.clear();
+                        //setImagesToView(imageEntities);
+                       model.scanForRemoteImages();
+                        //compositeDisposable.clear();
                     }
 
                     @Override
@@ -75,13 +76,23 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void setImagesToView(List<ImageEntity> images) {
-        if (!images.isEmpty()) {
-            view.loadImages(images);
+        //if (!images.isEmpty()) {
+        //    view.loadImages(images);
+        //} else {
+
+        System.out.println("***** AWS: " + model.canAccessAWS());
+
+        if (model.canAccessAWS()) {
+            System.out.println("***** CAN GET TO AWS");
+            //model.scanForRemoteImages();
         } else {
-            model.scanForRemoteImages();
+
+        }
+
+
             // TODO: add remote images to db
             // load images from db
 
-        }
+        //}
     }
 }
