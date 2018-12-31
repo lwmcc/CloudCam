@@ -50,8 +50,6 @@ public class RemoteImageDao implements RemoteDao {
 
     @Override
     public void saveImage(Document document) {
-
-        // TODO: injected object is null make a helper method
         Observable<Void> observable = Observable.create(o -> {
             Table table = Table.loadTable(dbClient(), IMAGES_TABLE);
             table.putItem(document);
@@ -98,6 +96,7 @@ public class RemoteImageDao implements RemoteDao {
 
                 String imageName = jsonObj.get(IMAGE_NAME).toString();
                 String imagePath = jsonObj.get(IMAGE_URI).toString();
+
                 String dateTime = jsonObj.get(DATE_TIME).toString();
 
                 AWSJSONDocument docImageName = new Gson().fromJson(imageName, AWSJSONDocument.class);
@@ -116,7 +115,7 @@ public class RemoteImageDao implements RemoteDao {
 
                     entities.add(entity);
                 }
-            } catch (JSONException | NumberFormatException  e) {
+            } catch (JSONException | NumberFormatException e) {
                 // TODO: do something
                 System.out.println("***** ERROR: " + e.getMessage());
             }
