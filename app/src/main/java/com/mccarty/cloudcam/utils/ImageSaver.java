@@ -2,6 +2,7 @@ package com.mccarty.cloudcam.utils;
 
 import android.media.Image;
 import android.util.Log;
+
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.dynamodbv2.document.datatype.Document;
@@ -20,8 +21,7 @@ import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.UUID;
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CLOUD_CAM_BUCKET;
@@ -53,7 +53,8 @@ public class ImageSaver {
     }
 
     public void saveImage() {
-        Observable<Void> observable = Observable.create(o -> {
+        Date date = new Date();
+        Completable.create(e -> {
             ByteBuffer buffer = image.getPlanes()[0].getBuffer();
             byte[] bytes = new byte[buffer.remaining()];
             buffer.get(bytes);
@@ -62,32 +63,40 @@ public class ImageSaver {
             try {
                 output = new FileOutputStream(file);
                 output.write(bytes);
-                Date date = new Date();
                 imageDao.insertImage(getImageEntity(date, file.getName(), file.getPath()));
-                if (networkUtils.hasNetworkAccess() && IdentityManager.getDefaultIdentityManager().isUserSignedIn()) {
-                    uploadWithTransferUtility(file, file.getName(), file.getPath(), date);
-                }
-            } catch (IOException e) {
-                Log.e("", "ERROR IN OBSERVER: " + e.getMessage());
+            } catch (IOException ioe) {
+                Log.e("", "ERROR IN OBSERVER: " + ioe.getMessage());
             } finally {
                 image.close();
                 if (null != output) {
                     try {
                         output.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
                     }
                 }
             }
-        });
 
-        observable.subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe();
+            if (!e.isDisposed()) {
+                e.onComplete();
+            }
+        }).andThen(uploadImage(date)).subscribeOn(Schedulers.io()).subscribe();
+    }
+
+    private Completable uploadImage(Date date) {
+        return Completable.create(e -> {
+            if (networkUtils.hasNetworkAccess() && IdentityManager.getDefaultIdentityManager().isUserSignedIn()) {
+                uploadWithTransferUtility(file, file.getName(), file.getPath(), date);
+            }
+
+            if (!e.isDisposed()) {
+                e.onComplete();
+            }
+        });
     }
 
     private Document getImageDocument(final String imageName, final String imagePath, final String id,
-                                     final String userId, final Date date) {
+                                      final String userId, final Date date) {
         Document document = new Document();
         document.put(ID, id);
         document.put(USER_ID, userId);
