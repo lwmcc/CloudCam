@@ -43,8 +43,8 @@ public class AWSModule {
     }
 
     @Provides
-    static RemoteImageDao provideRemoteImageDao(Application application) {
-        return new RemoteImageDao(application);
+    static RemoteImageDao provideRemoteImageDao(Application application, TransferUtility transferUtility) {
+        return new RemoteImageDao(application, transferUtility);
     }
 
     @Provides
