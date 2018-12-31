@@ -27,9 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.Completable;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CLOUD_CAM_BUCKET;
@@ -50,11 +48,10 @@ public class RemoteImageDao implements RemoteDao {
 
     @Override
     public void saveImage(Document document) {
-        Observable<Void> observable = Observable.create(o -> {
+        Completable.create(e -> {
             Table table = Table.loadTable(dbClient(), IMAGES_TABLE);
             table.putItem(document);
-        });
-        observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+        }).subscribeOn(Schedulers.io()).subscribe();
     }
 
     @Override
