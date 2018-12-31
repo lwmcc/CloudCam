@@ -1,4 +1,4 @@
-package com.mccarty.cloudcam.persistence.local;
+package com.mccarty.cloudcam.persistence;
 
 import android.arch.persistence.room.TypeConverter;
 
