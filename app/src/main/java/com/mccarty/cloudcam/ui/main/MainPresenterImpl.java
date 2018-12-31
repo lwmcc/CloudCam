@@ -8,6 +8,7 @@ import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 import java.util.List;
 
 import javax.inject.Inject;
+
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.SingleOnSubscribe;
@@ -40,8 +41,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public boolean hasInternetAccess() {
-        // TODO:
-        return true;
+        return model.hasInternetAccess();
     }
 
     @Override
@@ -57,9 +57,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
                     @Override
                     public void onSuccess(List<ImageEntity> imageEntities) {
-                        //setImagesToView(imageEntities);
-                       model.scanForRemoteImages();
-                        //compositeDisposable.clear();
+                        setImagesToView(imageEntities);
                     }
 
                     @Override
@@ -76,23 +74,10 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void setImagesToView(List<ImageEntity> images) {
-        //if (!images.isEmpty()) {
-        //    view.loadImages(images);
-        //} else {
-
-        System.out.println("***** AWS: " + model.canAccessAWS());
-
-        if (model.canAccessAWS()) {
-            System.out.println("***** CAN GET TO AWS");
-            //model.scanForRemoteImages();
-        } else {
-
+        if (images.isEmpty()) {
+            return;
         }
 
-
-            // TODO: add remote images to db
-            // load images from db
-
-        //}
+        view.loadImages(images);
     }
 }
