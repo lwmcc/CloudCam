@@ -25,6 +25,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.mccarty.cloudcam.persistence.PersistenceConstants.CLOUD_CAM_BUCKET;
 import static com.mccarty.cloudcam.utils.Constants.DATE_TIME;
 import static com.mccarty.cloudcam.utils.Constants.ID;
 import static com.mccarty.cloudcam.utils.Constants.IMAGE_NAME;
@@ -62,9 +63,10 @@ public class ImageSaver {
             try {
                 output = new FileOutputStream(file);
                 output.write(bytes);
-                imageDao.insertImage(getImageEntity(new Date(), file.getName(), file.getPath()));
+                Date date = new Date();
+                imageDao.insertImage(getImageEntity(date, file.getName(), file.getPath()));
                 if (networkUtils.hasNetworkAccess() && IdentityManager.getDefaultIdentityManager().isUserSignedIn()) {
-                    uploadWithTransferUtility(file, file.getName(), file.getPath());
+                    uploadWithTransferUtility(file, file.getName(), file.getPath(), date);
                 }
             } catch (IOException e) {
                 Log.e("", "ERROR IN OBSERVER: " + e.getMessage());
@@ -86,15 +88,13 @@ public class ImageSaver {
     }
 
     private Document getImageDocument(final String imageName, final String imagePath, final String id,
-                                     final String userId, final String time) {
+                                     final String userId, final Date date) {
         Document document = new Document();
         document.put(ID, id);
         document.put(USER_ID, userId);
-
-        // TODO: change to path, it's not a URI
         document.put(IMAGE_URI, imagePath);
         document.put(IMAGE_NAME, imageName);
-        document.put(DATE_TIME, time);
+        document.put(DATE_TIME, date.getTime());
 
         return document;
     }
@@ -107,14 +107,14 @@ public class ImageSaver {
         return imageEntity;
     }
 
-    private void uploadWithTransferUtility(File file, String imageName, String imagePath) {
-        TransferObserver uploadObserver = transferUtility.upload(imageName, file);
+    private void uploadWithTransferUtility(File file, String imageName, String imagePath, Date date) {
+        TransferObserver uploadObserver = transferUtility.upload(CLOUD_CAM_BUCKET, imageName, file);
         uploadObserver.setTransferListener(new TransferListener() {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (state == TransferState.COMPLETED) {
                     remoteImageDao.saveImage(getImageDocument(imageName, imagePath, UUID.randomUUID().toString(),
-                            cognitoUserPool.getCurrentUser().getUserId(), Instant.now().toString()));
+                            cognitoUserPool.getCurrentUser().getUserId(), date));
                 }
             }
 
