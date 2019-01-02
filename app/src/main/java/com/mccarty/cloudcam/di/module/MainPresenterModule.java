@@ -1,5 +1,7 @@
 package com.mccarty.cloudcam.di.module;
 
+import android.app.Application;
+
 import com.mccarty.cloudcam.model.MainModel;
 import com.mccarty.cloudcam.persistence.local.CloudCamDatabase;
 import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
@@ -20,7 +22,7 @@ class MainPresenterModule {
     }
 
     @Provides
-    static MainPresenterImpl provideMainPresenter(MainModel mainModel) {
-        return new MainPresenterImpl(mainModel);
+    static MainPresenterImpl provideMainPresenter(MainModel mainModel, Application application) {
+        return new MainPresenterImpl(mainModel, application);
     }
 }

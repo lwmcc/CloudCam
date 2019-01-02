@@ -8,6 +8,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.mccarty.cloudcam.R;
+import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
 import com.mccarty.cloudcam.persistence.remote.image.RemoteImageDao;
 
 import dagger.Module;
@@ -43,8 +44,8 @@ public class AWSModule {
     }
 
     @Provides
-    static RemoteImageDao provideRemoteImageDao(Application application, TransferUtility transferUtility) {
-        return new RemoteImageDao(application, transferUtility);
+    static RemoteImageDao provideRemoteImageDao(Application application, TransferUtility transferUtility, ImageDao imageDao) {
+        return new RemoteImageDao(application, transferUtility, imageDao);
     }
 
     @Provides

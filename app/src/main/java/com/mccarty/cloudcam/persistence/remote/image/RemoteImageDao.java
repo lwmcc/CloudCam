@@ -1,6 +1,8 @@
 package com.mccarty.cloudcam.persistence.remote.image;
 
 import android.app.Application;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobile.auth.core.IdentityManager;
@@ -16,6 +18,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.google.gson.Gson;
 import com.mccarty.cloudcam.persistence.AWSJSONDocument;
+import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
 import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 
 import org.json.JSONException;
@@ -27,10 +30,15 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
 import io.reactivex.Completable;
+import io.reactivex.CompletableEmitter;
+import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CLOUD_CAM_BUCKET;
+import static com.mccarty.cloudcam.persistence.PersistenceConstants.IMAGE_DOWNLOAD_SAVE;
+import static com.mccarty.cloudcam.persistence.PersistenceConstants.INSERT_ENTITY;
 import static com.mccarty.cloudcam.utils.Constants.DATE_TIME;
 import static com.mccarty.cloudcam.utils.Constants.IMAGES_TABLE;
 import static com.mccarty.cloudcam.utils.Constants.IMAGE_NAME;
@@ -40,10 +48,12 @@ public class RemoteImageDao implements RemoteDao {
 
     private final Application application;
     private final TransferUtility transferUtility;
+    private final ImageDao imageDao;
 
-    public RemoteImageDao(Application application, TransferUtility transferUtility) {
+    public RemoteImageDao(Application application, TransferUtility transferUtility, ImageDao imageDao) {
         this.application = application;
         this.transferUtility = transferUtility;
+        this.imageDao = imageDao;
     }
 
     @Override
@@ -55,7 +65,7 @@ public class RemoteImageDao implements RemoteDao {
     }
 
     @Override
-    public List<ImageEntity> getImages() {
+    public void getImages() {
         Table imagesTable = Table.loadTable(dbClient(), IMAGES_TABLE);
 
         imagesTable.query(new Primitive(credentials().getCachedIdentityId())).getAllResults();
@@ -64,8 +74,7 @@ public class RemoteImageDao implements RemoteDao {
         expression.setExpressionStatement("user_id = :id");
         expression.withExpressionAttibuteValues(":id", new Primitive("larry"));
 
-        return downloadFromS3(
-                convertDocsToEntities(imagesTable.scan(expression).getAllResults()));
+        downloadFromS3(convertDocsToEntities(imagesTable.scan(expression).getAllResults()));
     }
 
     private AmazonDynamoDBClient dbClient() {
@@ -122,13 +131,13 @@ public class RemoteImageDao implements RemoteDao {
         return entities;
     }
 
-    private List<ImageEntity> downloadFromS3(final List<ImageEntity> s3Images) {
+    private void downloadFromS3(final List<ImageEntity> s3Images) {
+
+        System.out.println("***** NUM TO DL: " + s3Images.size());
 
         if (s3Images.isEmpty()) {
-            return Collections.emptyList();
+            return;
         }
-
-        List<ImageEntity> entities = new ArrayList<>();
 
         s3Images.forEach(key -> {
             String imageName = key.getImageName();
@@ -143,14 +152,22 @@ public class RemoteImageDao implements RemoteDao {
                         entity.setImageName(key.getImageName());
                         entity.setImagePath(key.getImagePath());
                         entity.setDate(key.getDate());
-                        entities.add(entity);
+
+                        Completable.create(e -> {
+                            imageDao.insertImage(entity);
+
+                            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(application);
+                            Intent intent = new Intent(INSERT_ENTITY);
+                            intent.putExtra(INSERT_ENTITY, IMAGE_DOWNLOAD_SAVE);
+                            manager.sendBroadcast(intent);
+                        }).subscribeOn(Schedulers.io()).subscribe();
                     }
                 }
 
                 @Override
                 public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
                     // TODO: do something
-                    System.out.println("***** KEY START DOWNLOAD PROG: " + id);
+                    //System.out.println("***** KEY START DOWNLOAD PROG: " + id);
                 }
 
                 @Override
@@ -161,7 +178,6 @@ public class RemoteImageDao implements RemoteDao {
             });
         });
 
-        return entities;
     }
 
 }

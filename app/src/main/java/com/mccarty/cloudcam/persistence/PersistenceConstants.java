@@ -17,4 +17,8 @@ public class PersistenceConstants {
     public static final String DEFAULT_CAMERA_ID = "0";
 
     public static final String CLOUD_CAM_BUCKET = "cloud-cam-media";
+
+    public static final String INSERT_ENTITY = "insert_entity";
+
+    public static final String IMAGE_DOWNLOAD_SAVE = "image_download_save";
 }

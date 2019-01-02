@@ -67,20 +67,24 @@ public class MainActivity extends BaseActivity {
             trans.add(R.id.main_fragment, mainFragment);
             trans.commit();
         }
+    }
 
+    @Override
+    public void onStart() {
         AWSMobileClient.getInstance().initialize(this, awsStartupResult -> {
             IdentityManager.getDefaultIdentityManager().getUserID(new IdentityHandler() {
                 @Override
                 public void onIdentityId(String identityId) {
-                    Log.d(TAG, "INIT AWS");
+                    Log.d(TAG, "***** INIT AWS");
                 }
 
                 @Override
                 public void handleError(Exception exception) {
-                    Log.d(TAG, "INIT AWS ERROR: ", exception);
+                    Log.d(TAG, "***** INIT AWS ERROR: ", exception);
                 }
             });
         }).execute();
+        super.onStart();
     }
 
     @Override

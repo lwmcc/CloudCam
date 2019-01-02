@@ -11,5 +11,5 @@ import java.util.List;
 
 public interface RemoteDao {
     void saveImage(Document document);
-    List<ImageEntity> getImages();
+    void getImages();
 }

@@ -1,5 +1,10 @@
 package com.mccarty.cloudcam.ui.main;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.mccarty.cloudcam.model.MainModel;
@@ -17,16 +22,20 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.mccarty.cloudcam.persistence.PersistenceConstants.INSERT_ENTITY;
+
 //@ActivityScope
 public class MainPresenterImpl implements MainContract.MainPresenter {
 
     private MainContract.MainView view;
     private final MainModel model;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private final Context context;
 
     @Inject
-    public MainPresenterImpl(MainModel mainModel) {
+    public MainPresenterImpl(MainModel mainModel, Context context) {
         this.model = mainModel;
+        this.context = context;
     }
 
     @Override
@@ -74,10 +83,24 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
 
     @Override
     public void setImagesToView(List<ImageEntity> images) {
-        if (images.isEmpty()) {
-            return;
-        }
-
         view.loadImages(images);
     }
+
+    public BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            intent.getStringExtra(INSERT_ENTITY);
+            getAllImages();
+        }
+    };
+
+    public void registerReceiver() {
+        IntentFilter filter = new IntentFilter(INSERT_ENTITY);
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, filter);
+    }
+
+    public void unregisterReceiver() {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
+
 }

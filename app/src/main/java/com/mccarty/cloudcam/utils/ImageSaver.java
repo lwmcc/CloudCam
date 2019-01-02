@@ -50,6 +50,8 @@ public class ImageSaver {
         this.networkUtils = networkUtils;
         this.transferUtility = transferUtility;
         this.cognitoUserPool = cognitoUserPool;
+
+        System.out.println("***** SIGNED IN CAM: " + IdentityManager.getDefaultIdentityManager().isUserSignedIn());
     }
 
     public void saveImage() {
