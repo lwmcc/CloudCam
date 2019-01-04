@@ -33,6 +33,10 @@ public final class ImageEntity {
         return imagePath;
     }
 
+    public void setDate(@Nullable Date date) {
+        this.date = date;
+    }
+
     @Nullable
     public Date getDate() {
         return date;
@@ -44,10 +48,6 @@ public final class ImageEntity {
 
     public void setImagePath(@NonNull String imagePath) {
         this.imagePath = imagePath;
-    }
-
-    public void setDate(@Nullable Date date) {
-        this.date = date;
     }
 
 }

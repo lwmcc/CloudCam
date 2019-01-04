@@ -89,14 +89,12 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
     public BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            intent.getStringExtra(INSERT_ENTITY);
             getAllImages();
         }
     };
 
     public void registerReceiver() {
-        IntentFilter filter = new IntentFilter(INSERT_ENTITY);
-        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, filter);
+        LocalBroadcastManager.getInstance(context).registerReceiver(receiver, new IntentFilter(INSERT_ENTITY));
     }
 
     public void unregisterReceiver() {

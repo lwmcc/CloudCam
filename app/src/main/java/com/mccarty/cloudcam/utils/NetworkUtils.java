@@ -7,19 +7,19 @@ import android.net.NetworkInfo;
 
 public class NetworkUtils {
 
-    private final Application application;
+  private final Application application;
 
-    public NetworkUtils(Application application) {
-        this.application = application;
-    }
+  public NetworkUtils(Application application) {
+    this.application = application;
+  }
 
-    private ConnectivityManager getConnectivityManager() {
-        return (ConnectivityManager) application.getSystemService(Context.CONNECTIVITY_SERVICE);
-    }
+  private ConnectivityManager getConnectivityManager() {
+    return (ConnectivityManager) application.getSystemService(Context.CONNECTIVITY_SERVICE);
+  }
 
-    public boolean hasNetworkAccess() {
-        NetworkInfo activeNetwork = getConnectivityManager().getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-    }
+  public boolean hasNetworkAccess() {
+    NetworkInfo activeNetwork = getConnectivityManager().getActiveNetworkInfo();
+    return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+  }
 
 }

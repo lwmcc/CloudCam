@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
@@ -132,15 +133,12 @@ public class RemoteImageDao implements RemoteDao {
     }
 
     private void downloadFromS3(final List<ImageEntity> s3Images) {
-
-        System.out.println("***** NUM TO DL: " + s3Images.size());
-
         if (s3Images.isEmpty()) {
             return;
         }
 
-        s3Images.forEach(key -> {
-            String imageName = key.getImageName();
+        IntStream.range(0, s3Images.size()).forEach(index -> {
+            String imageName = s3Images.get(index).getImageName();
             File file = new File(application.getExternalFilesDir(null), imageName);
 
             TransferObserver observer = transferUtility.download(CLOUD_CAM_BUCKET, imageName, file);
@@ -149,17 +147,18 @@ public class RemoteImageDao implements RemoteDao {
                 public void onStateChanged(int id, TransferState state) {
                     if (state == TransferState.COMPLETED) {
                         ImageEntity entity = new ImageEntity();
-                        entity.setImageName(key.getImageName());
-                        entity.setImagePath(key.getImagePath());
-                        entity.setDate(key.getDate());
+                        entity.setImageName(imageName);
+                        entity.setImagePath(s3Images.get(index).getImagePath());
+                        entity.setDate(s3Images.get(index).getDate());
 
                         Completable.create(e -> {
                             imageDao.insertImage(entity);
-
-                            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(application);
-                            Intent intent = new Intent(INSERT_ENTITY);
-                            intent.putExtra(INSERT_ENTITY, IMAGE_DOWNLOAD_SAVE);
-                            manager.sendBroadcast(intent);
+                            int size = s3Images.size() - 1;
+                            if (index == size) {
+                                LocalBroadcastManager manager = LocalBroadcastManager.getInstance(application);
+                                Intent intent = new Intent(INSERT_ENTITY);
+                                manager.sendBroadcast(intent);
+                            }
                         }).subscribeOn(Schedulers.io()).subscribe();
                     }
                 }
