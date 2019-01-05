@@ -33,12 +33,9 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import io.reactivex.Completable;
-import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.schedulers.Schedulers;
 
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.CLOUD_CAM_BUCKET;
-import static com.mccarty.cloudcam.persistence.PersistenceConstants.IMAGE_DOWNLOAD_SAVE;
 import static com.mccarty.cloudcam.persistence.PersistenceConstants.INSERT_ENTITY;
 import static com.mccarty.cloudcam.utils.Constants.DATE_TIME;
 import static com.mccarty.cloudcam.utils.Constants.IMAGES_TABLE;

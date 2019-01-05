@@ -86,7 +86,7 @@ public class MainPresenterImpl implements MainContract.MainPresenter {
         view.loadImages(images);
     }
 
-    public BroadcastReceiver receiver = new BroadcastReceiver() {
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             getAllImages();

@@ -1,16 +1,10 @@
 package com.mccarty.cloudcam.ui.main;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +16,6 @@ import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.di.component.ActivityScope;
 import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 import com.mccarty.cloudcam.ui.components.ImageAdapter;
-import com.mccarty.cloudcam.utils.UIUtils;
 
 import java.util.List;
 
@@ -66,19 +59,18 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
     @Override
     public void onResume() {
 
-        AWSMobileClient.getInstance().initialize(getContext(), awsStartupResult -> {
-            IdentityManager.getDefaultIdentityManager().getUserID(new IdentityHandler() {
-                @Override
-                public void onIdentityId(String identityId) {
+        AWSMobileClient.getInstance().initialize(getContext(), awsStartupResult ->
+                IdentityManager.getDefaultIdentityManager().getUserID(new IdentityHandler() {
+            @Override
+            public void onIdentityId(String identityId) {
 
-                }
+            }
 
-                @Override
-                public void handleError(Exception exception) {
+            @Override
+            public void handleError(Exception exception) {
 
-                }
-            });
-        }).execute();
+            }
+        })).execute();
 
         presenter.registerReceiver();
         presenter.takeView(this);
@@ -101,10 +93,7 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
 
     @Override
     public void loadImages(List<ImageEntity> images) {
-        recyclerView.setAdapter(new ImageAdapter(images,
-                UIUtils.getThumbnailHeightPx(getActivity().getResources())));
-
-        // TODO: use dp
+        recyclerView.setAdapter(new ImageAdapter(images));
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
                 getActivity().getResources().getConfiguration().orientation == 1 ? 3 : 5));
         recyclerView.setHasFixedSize(true);

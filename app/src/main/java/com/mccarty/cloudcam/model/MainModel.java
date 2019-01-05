@@ -2,7 +2,6 @@ package com.mccarty.cloudcam.model;
 
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.mccarty.cloudcam.persistence.local.CloudCamDatabase;
-import com.mccarty.cloudcam.persistence.local.Image.ImageDao;
 import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 import com.mccarty.cloudcam.persistence.remote.image.RemoteImageDao;
 import com.mccarty.cloudcam.utils.NetworkUtils;
@@ -15,14 +14,11 @@ public class MainModel {
     private final CloudCamDatabase database;
     private final NetworkUtils networkUtils;
     private final RemoteImageDao remoteImageDao;
-    private final ImageDao imageDao;
 
-    public MainModel(CloudCamDatabase cloudDatabase, NetworkUtils networkUtils, RemoteImageDao remoteImageDao,
-                     ImageDao imageDao) {
+    public MainModel(CloudCamDatabase cloudDatabase, NetworkUtils networkUtils, RemoteImageDao remoteImageDao) {
         this.database = cloudDatabase;
         this.networkUtils = networkUtils;
         this.remoteImageDao = remoteImageDao;
-        this.imageDao = imageDao;
     }
 
     /**

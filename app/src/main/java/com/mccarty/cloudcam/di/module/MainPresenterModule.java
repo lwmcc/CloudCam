@@ -18,7 +18,7 @@ class MainPresenterModule {
     @Provides
     static MainModel provideMainModel(CloudCamDatabase cloudDatabase, NetworkUtils networkUtils,
                                       RemoteImageDao remoteImageDao, ImageDao imageDao) {
-        return new MainModel(cloudDatabase, networkUtils, remoteImageDao, imageDao);
+        return new MainModel(cloudDatabase, networkUtils, remoteImageDao);
     }
 
     @Provides
