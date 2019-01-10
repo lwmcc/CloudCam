@@ -30,6 +30,10 @@
     <dimen name="activity_vertical_margin">20dp</dimen>
     <dimen name="grid_image_size">117dp</dimen>
     <dimen name="grid_image_margin_top">56dp</dimen>
+    <dimen name="grid_landscape_image_size">134dp</dimen>
+    <dimen name="grid__tablet_image_size">200dp</dimen>
+    <dimen name="grid_landscape_tablet_image_size">200dp</dimen>
+    <dimen name="grid_landscape_image_margin_top">48dp</dimen>
     <dimen name="grid_image_padding_bottom">2dp</dimen>
     <dimen name="grid_margin_left">2dp</dimen>
 </resources>

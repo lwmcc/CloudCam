@@ -4,12 +4,13 @@
     tools:context="com.mccarty.cloudcam.ui.main.MainActivity">
     <item
         android:id="@+id/action_sign_in"
+        android:icon="@drawable/ic_action_cloud_queue"
         android:orderInCategory="100"
         android:title="@string/action_sign_in"
         app:showAsAction="ifRoom" />
-
     <item
         android:id="@+id/action_sign_out"
+        android:icon="@drawable/ic_action_cloud_off"
         android:orderInCategory="101"
         android:title="@string/action_sign_out"
         app:showAsAction="ifRoom" />
