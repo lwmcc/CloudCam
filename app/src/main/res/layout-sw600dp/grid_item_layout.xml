@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/imageView"
+    android:layout_width="@dimen/grid_image_size"
+    android:layout_height="@dimen/grid__tablet_image_size"
+    android:contentDescription="@string/default_grid_image"
+    android:scaleType="centerCrop"
+    android:layout_marginBottom="@dimen/grid_image_padding_bottom"
+    android:layout_marginRight="@dimen/grid_image_padding_bottom"
+    app:srcCompat="@drawable/ic_panorama" />
+
