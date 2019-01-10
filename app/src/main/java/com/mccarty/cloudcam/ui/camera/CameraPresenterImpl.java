@@ -14,83 +14,83 @@ import javax.inject.Inject;
 
 public class CameraPresenterImpl implements CameraPresenter {
 
-    private CameraView view;
+  private CameraView view;
 
-    private final CameraAPI cameraAPI;
+  private final CameraAPI cameraAPI;
 
-    private final NetworkUtils networkUtils;
+  private final NetworkUtils networkUtils;
 
-    @Inject
-    public CameraPresenterImpl(CameraAPI cameraAPI, NetworkUtils networkUtils) {
-        this.cameraAPI = cameraAPI;
-        this.networkUtils = networkUtils;
+  @Inject
+  public CameraPresenterImpl(CameraAPI cameraAPI, NetworkUtils networkUtils) {
+    this.cameraAPI = cameraAPI;
+    this.networkUtils = networkUtils;
+  }
+
+  @Override
+  public void startThread() {
+    cameraAPI.startBackgroundThread();
+  }
+
+  @Override
+  public Size getPreviewSize() {
+    return cameraAPI.getPreviewSize();
+  }
+
+  @Override
+  public void setAspectRatio(Size size, int rotation) {
+    if (rotation ==
+            Configuration.ORIENTATION_LANDSCAPE) {
+      view.setAspectRatioLandscape(size);
+    } else {
+      view.setAspectRatioPortrait(size);
     }
+  }
 
-    @Override
-    public void startThread() {
-        cameraAPI.startBackgroundThread();
-    }
+  @Override
+  public void openCamera(AutoFitTextureView textureView, int rotation) {
+    Size size = getPreviewSize();
+    view.setTransform(cameraAPI.openCamera(textureView.getWidth(), textureView.getHeight(),
+            rotation, new Surface(textureView.getSurfaceTexture()), size));
+    setAspectRatio(size, rotation);
+  }
 
-    @Override
-    public Size getPreviewSize() {
-        return cameraAPI.getPreviewSize();
-    }
+  @Override
+  public void switchCamera(AutoFitTextureView textureView, int rotation) {
 
-    @Override
-    public void setAspectRatio(Size size, int rotation) {
-        if (rotation ==
-                Configuration.ORIENTATION_LANDSCAPE) {
-            view.setAspectRatioLandscape(size);
-        } else {
-            view.setAspectRatioPortrait(size);
-        }
-    }
+    cameraAPI.closeCamera();
+    Size size = getPreviewSize();
+    cameraAPI.switchCamera(textureView.getWidth(), textureView.getHeight(),
+            rotation, new Surface(textureView.getSurfaceTexture()), size);
+    setAspectRatio(size, rotation);
+  }
 
-    @Override
-    public void openCamera(AutoFitTextureView textureView, int rotation) {
-        Size size = getPreviewSize();
-        view.setTransform(cameraAPI.openCamera(textureView.getWidth(), textureView.getHeight(),
-                rotation, new Surface(textureView.getSurfaceTexture()), size));
-        setAspectRatio(size, rotation);
-    }
+  public void takePicture() {
+    cameraAPI.lockFocus();
+  }
 
-    @Override
-    public void switchCamera(AutoFitTextureView textureView, int rotation) {
+  @Override
+  public void takeView(CameraView view) {
+    this.view = view;
+  }
 
-        cameraAPI.closeCamera();
-        Size size = getPreviewSize();
-        cameraAPI.switchCamera(textureView.getWidth(), textureView.getHeight(),
-                rotation, new Surface(textureView.getSurfaceTexture()), size);
-        setAspectRatio(size, rotation);
-    }
+  @Override
+  public void dropView() {
+    view = null;
+  }
 
-    public void takePicture() {
-        cameraAPI.lockFocus();
-    }
+  @Override
+  public boolean hasInternetAccess() {
+    return networkUtils.hasNetworkAccess();
+  }
 
-    @Override
-    public void takeView(CameraView view) {
-        this.view = view;
-    }
+  @Override
+  public void stopBackgroundThread() {
+    cameraAPI.stopBackgroundThread();
+  }
 
-    @Override
-    public void dropView() {
-        view = null;
-    }
-
-    @Override
-    public boolean hasInternetAccess() {
-        return networkUtils.hasNetworkAccess();
-    }
-
-    @Override
-    public void stopBackgroundThread() {
-        cameraAPI.stopBackgroundThread();
-    }
-
-    @Override
-    public void configureTransform(int width, int height, int rotation) {
-        cameraAPI.configureTransform(width, height, getPreviewSize(), rotation);
-    }
+  @Override
+  public void configureTransform(int width, int height, int rotation) {
+    cameraAPI.configureTransform(width, height, getPreviewSize(), rotation);
+  }
 
 }
