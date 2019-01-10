@@ -15,25 +15,25 @@ import dagger.android.HasFragmentInjector;
 
 public class CloudCamApp extends MultiDexApplication implements HasActivityInjector, HasFragmentInjector {
 
-    @Inject
-    DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
+  @Inject
+  DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
 
-    @Inject
-    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
+  @Inject
+  DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        DaggerAppComponent.builder().application(this).build().inject(this);
-    }
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    DaggerAppComponent.builder().application(this).build().inject(this);
+  }
 
-    @Override
-    public AndroidInjector<Activity> activityInjector() {
-        return dispatchingAndroidInjector;
-    }
+  @Override
+  public AndroidInjector<Activity> activityInjector() {
+    return dispatchingAndroidInjector;
+  }
 
-    @Override
-    public AndroidInjector<Fragment> fragmentInjector() {
-        return fragmentDispatchingAndroidInjector;
-    }
+  @Override
+  public AndroidInjector<Fragment> fragmentInjector() {
+    return fragmentDispatchingAndroidInjector;
+  }
 }

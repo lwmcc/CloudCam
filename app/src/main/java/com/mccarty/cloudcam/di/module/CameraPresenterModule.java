@@ -21,20 +21,20 @@ import dagger.Provides;
 @Module(includes = {DatabaseModule.class, NetworkModule.class, AWSModule.class})
 public class CameraPresenterModule {
 
-    @Provides
-    static CameraManager provideCameraManager(Application application) {
-        return (CameraManager) application.getSystemService(Context.CAMERA_SERVICE);
-    }
+  @Provides
+  static CameraManager provideCameraManager(Application application) {
+    return (CameraManager) application.getSystemService(Context.CAMERA_SERVICE);
+  }
 
-    @Provides
-    static CameraAPI provideCamera(Application application, CameraManager manager, AppPreferences appPreferences,
-                                   ImageDao imageDao, NetworkUtils networkUtils, TransferUtility transferUtility, CognitoUserPool cognitoUserPool,
-                                   RemoteImageDao remoteImageDao) {
-        return new CameraAPI(application, manager, appPreferences, imageDao, remoteImageDao, networkUtils, transferUtility, cognitoUserPool);
-    }
+  @Provides
+  static CameraAPI provideCamera(Application application, CameraManager manager, AppPreferences appPreferences,
+                                 ImageDao imageDao, NetworkUtils networkUtils, TransferUtility transferUtility, CognitoUserPool cognitoUserPool,
+                                 RemoteImageDao remoteImageDao) {
+    return new CameraAPI(application, manager, appPreferences, imageDao, remoteImageDao, networkUtils, transferUtility, cognitoUserPool);
+  }
 
-    @Provides
-    static CameraPresenterImpl provideCameraPresenter(CameraAPI cameraAPI, NetworkUtils networkUtils) {
-        return new CameraPresenterImpl(cameraAPI, networkUtils);
-    }
+  @Provides
+  static CameraPresenterImpl provideCameraPresenter(CameraAPI cameraAPI, NetworkUtils networkUtils) {
+    return new CameraPresenterImpl(cameraAPI, networkUtils);
+  }
 }

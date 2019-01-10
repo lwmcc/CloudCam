@@ -12,4 +12,6 @@ public class Constants {
   public static final String IMAGE_NAME = "image_name";
   public static final String DATE_TIME = "date_time";
   public static final String IMAGES_TABLE = "images";
+  public static final String POSITION = "position";
+  public static final String ENTITY_LIST = "entity_list";
 }
