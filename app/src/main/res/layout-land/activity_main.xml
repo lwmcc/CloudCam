@@ -33,7 +33,7 @@
         layout="@layout/content_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/grid_image_margin_top"
+        android:layout_marginTop="@dimen/grid_landscape_image_margin_top"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <android.support.design.widget.FloatingActionButton
