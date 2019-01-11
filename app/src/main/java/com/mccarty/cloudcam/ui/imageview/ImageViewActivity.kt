@@ -1,17 +1,26 @@
 package com.mccarty.cloudcam.ui.imageview
 
+import android.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import com.mccarty.cloudcam.R
+import com.mccarty.cloudcam.ui.main.MainFragment
+import dagger.Lazy
+import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_image_view.*
+import javax.inject.Inject
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 class ImageViewActivity : AppCompatActivity() {
+
+    @Inject
+    internal var fragment: Lazy<Fragment>? = null
+
     private val mHideHandler = Handler()
     private val mHidePart2Runnable = Runnable {
         // Delayed removal of status and navigation bar
@@ -47,6 +56,7 @@ class ImageViewActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_image_view)
@@ -61,6 +71,15 @@ class ImageViewActivity : AppCompatActivity() {
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
         dummy_button.setOnTouchListener(mDelayHideTouchListener)
+
+        var frag: Fragment? = fragmentManager.findFragmentById(R.id.main_fragment) as Fragment
+
+        if (frag == null) {
+            frag = fragment?.get()
+
+            val manager = fragmentManager
+            manager.beginTransaction().add(R.id.main_fragment, frag).commit()
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
