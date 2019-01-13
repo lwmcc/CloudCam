@@ -1,7 +1,6 @@
 package com.mccarty.cloudcam.ui.main;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -11,15 +10,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.mobile.auth.core.IdentityHandler;
 import com.amazonaws.mobile.auth.core.IdentityManager;
 import com.amazonaws.mobile.client.AWSMobileClient;
-import com.amazonaws.mobile.client.AWSStartupHandler;
-import com.amazonaws.mobile.client.AWSStartupResult;
-import com.amazonaws.mobile.config.AWSConfiguration;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserDetails;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.ui.base.BaseActivity;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
@@ -71,19 +64,18 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onStart() {
-        AWSMobileClient.getInstance().initialize(this, awsStartupResult -> {
-            IdentityManager.getDefaultIdentityManager().getUserID(new IdentityHandler() {
-                @Override
-                public void onIdentityId(String identityId) {
-                    Log.d(TAG, "***** INIT AWS");
-                }
+        AWSMobileClient.getInstance().initialize(this, awsStartupResult ->
+                IdentityManager.getDefaultIdentityManager().getUserID(new IdentityHandler() {
+            @Override
+            public void onIdentityId(String identityId) {
+                Log.d(TAG, "***** INIT AWS");
+            }
 
-                @Override
-                public void handleError(Exception exception) {
-                    Log.d(TAG, "***** INIT AWS ERROR: ", exception);
-                }
-            });
-        }).execute();
+            @Override
+            public void handleError(Exception exception) {
+                Log.d(TAG, "***** INIT AWS ERROR: ", exception);
+            }
+        })).execute();
         super.onStart();
     }
 
