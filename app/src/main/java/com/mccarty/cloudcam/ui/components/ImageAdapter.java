@@ -29,13 +29,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
         ViewHolder(ImageView v) {
             super(v);
+            v.setOnClickListener(this);
             image = v.findViewById(R.id.imageView);
-            image.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            view.setOnClickListener(v -> clickListener.onClick(view, getAdapterPosition()));
+            clickListener.onClick(view, getAdapterPosition());
         }
     }
 
