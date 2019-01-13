@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.amazonaws.mobile.auth.core.IdentityHandler;
 import com.amazonaws.mobile.auth.core.IdentityManager;
@@ -18,11 +17,9 @@ import com.mccarty.cloudcam.R;
 import com.mccarty.cloudcam.di.component.ActivityScope;
 import com.mccarty.cloudcam.persistence.local.Image.ImageEntity;
 import com.mccarty.cloudcam.ui.components.ImageAdapter;
-import com.mccarty.cloudcam.ui.components.ViewClickListener;
-import com.mccarty.cloudcam.ui.imageview.ImageViewActivity;
+import com.mccarty.cloudcam.ui.imageview.ImageView2Activity;
 import com.mccarty.cloudcam.ui.imageview.MainOnClick;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,10 +99,9 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
 
     @Override
     public void loadImages(List<ImageEntity> images) {
-        MainOnClick listener = (view, position) -> {
-            startActivity(new Intent(getActivity(), ImageViewActivity.class).putExtra(POSITION, position)
-                    .putParcelableArrayListExtra(ENTITY_LIST, new ArrayList<>(images)));
-        };
+        MainOnClick listener = (view, position) ->
+                startActivity(new Intent(getActivity(), ImageView2Activity.class).putExtra(POSITION, position)
+                        .putParcelableArrayListExtra(ENTITY_LIST, new ArrayList<>(images)));
 
         recyclerView.setAdapter(new ImageAdapter(images, listener));
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(),
