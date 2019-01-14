@@ -1,33 +1,44 @@
 package com.mccarty.cloudcam.ui.imageview
 
-import android.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 
 import com.mccarty.cloudcam.R
+import com.mccarty.cloudcam.persistence.local.Image.ImageEntity
 import com.mccarty.cloudcam.ui.base.BaseActivity
-import com.mccarty.cloudcam.ui.main.MainFragment
+import com.mccarty.cloudcam.utils.Constants.ENTITY_LIST
+import com.mccarty.cloudcam.utils.Constants.POSITION
 import dagger.Lazy
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class ImageView2Activity : BaseActivity() {
 
-    //@Inject
-    //var fragment: Lazy<ImageViewFragment>? = null
+    internal var fragment: Lazy<ImageViewFragment>? = null
+        @Inject set
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_view2)
 
-        // var frag: ImageViewFragment? = fragmentManager.findFragmentById(R.id.main_fragment) as ImageViewFragment
+        val intent = intent
+        val images = intent.getParcelableArrayListExtra<ImageEntity>(ENTITY_LIST)
+        val position = intent.getIntExtra(POSITION, 0)
 
-        //if (frag == null) {
-        //frag = com.mccarty.cloudcam.ui.imageview.ImageViewFragment?.get()
+        val bundle = Bundle()
+        bundle.putInt(POSITION, position)
+        bundle.putParcelableArrayList(POSITION, images)
 
-        //val manager = fragmentManager
-        //manager.beginTransaction().add(R.id.main_fragment, frag).commit()
-        //}
+        var frag: ImageViewFragment? = fragmentManager.findFragmentById(R.id.image_view_fragment) as? ImageViewFragment
+
+        if (frag == null) {
+            frag = fragment?.get()
+            frag?.arguments = Bundle()
+            val manager = fragmentManager
+            manager.beginTransaction().add(R.id.image_view_fragment, frag).commit()
+        }
     }
+
 }
