@@ -18,6 +18,9 @@ import com.mccarty.cloudcam.ui.base.BaseActivity;
 import com.mccarty.cloudcam.ui.camera.CameraActivity;
 import com.mccarty.cloudcam.ui.login.LoginActivity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;

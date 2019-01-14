@@ -52,6 +52,7 @@ public class MainFragment extends DaggerFragment implements MainContract.MainVie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override

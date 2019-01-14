@@ -28,8 +28,6 @@ import static com.mccarty.cloudcam.persistence.PersistenceConstants.INSERT_ENTIT
 //@ActivityScope
 public class ImageViewPresenter {
 
-    private MainContract.MainView view;
-
     @Inject
     public ImageViewPresenter() {
 
