@@ -4,11 +4,13 @@ import com.mccarty.cloudcam.ui.imageview.ImageViewFragment;
 import com.mccarty.cloudcam.ui.main.MainFragment;
 
 import dagger.Module;
+import dagger.Provides;
 
 @Module
-public abstract class ImageViewFragmentModule {
+public class ImageViewFragmentModule {
 
-    static ImageViewFragment provideImageViewFragment() {
+    @Provides
+    ImageViewFragment provideImageViewFragment() {
         return new ImageViewFragment();
     }
 }
