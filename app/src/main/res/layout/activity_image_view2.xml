@@ -6,4 +6,9 @@
     android:layout_height="match_parent"
     tools:context="com.mccarty.cloudcam.ui.imageview.ImageView2Activity">
 
+    <include
+        android:id="@+id/image_view_include"
+        layout="@layout/content_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </android.support.constraint.ConstraintLayout>
