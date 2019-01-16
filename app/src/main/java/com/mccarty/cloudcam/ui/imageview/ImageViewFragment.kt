@@ -13,6 +13,7 @@ import com.mccarty.cloudcam.persistence.local.Image.ImageEntity
 import com.mccarty.cloudcam.utils.Constants.ENTITY_LIST
 import com.mccarty.cloudcam.utils.Constants.POSITION
 import dagger.android.DaggerFragment
+import java.util.ArrayList
 
 @ActivityScope
 class ImageViewFragment : DaggerFragment() {
@@ -32,5 +33,19 @@ class ImageViewFragment : DaggerFragment() {
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_image_view, container, false)
     }
+
+   /* override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnFragmentInteractionListener) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }*/
 
 }
