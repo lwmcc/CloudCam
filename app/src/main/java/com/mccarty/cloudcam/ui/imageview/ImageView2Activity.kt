@@ -29,13 +29,18 @@ class ImageView2Activity : BaseActivity() {
 
         val bundle = Bundle()
         bundle.putInt(POSITION, position)
-        bundle.putParcelableArrayList(POSITION, images)
+        bundle.putParcelableArrayList(ENTITY_LIST, images)
 
         var frag: ImageViewFragment? = fragmentManager.findFragmentById(R.id.image_view_fragment) as? ImageViewFragment
 
         if (frag == null) {
             frag = fragment?.get()
-            frag?.arguments = Bundle()
+            val args = Bundle()
+            args.putInt(POSITION, position)
+            args.putParcelableArrayList(ENTITY_LIST, images)
+
+            frag?.arguments = args
+
             val manager = fragmentManager
             manager.beginTransaction().add(R.id.image_view_fragment, frag).commit()
         }
