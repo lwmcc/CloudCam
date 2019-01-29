@@ -69,8 +69,8 @@ public class RemoteImageDao implements RemoteDao {
         imagesTable.query(new Primitive(credentials().getCachedIdentityId())).getAllResults();
 
         final Expression expression = new Expression();
-        expression.setExpressionStatement("user_id = :id");
-        expression.withExpressionAttibuteValues(":id", new Primitive("larry"));
+        expression.setExpressionStatement("user_id = :id"); // TODO: use constants
+        expression.withExpressionAttibuteValues(":id", new Primitive("larry")); // get current user from AWS
 
         downloadFromS3(convertDocsToEntities(imagesTable.scan(expression).getAllResults()));
     }
@@ -111,19 +111,18 @@ public class RemoteImageDao implements RemoteDao {
                 Optional<String> optImageUri = Optional.ofNullable(docImageURi.value);
                 Optional<String> optDateTime = Optional.ofNullable(docDateTime.value);
 
-                if (optImageName.isPresent() && optImageUri.isPresent()) {
-                    entity.setImageName(optImageName.get());
-                    entity.setImagePath(optImageUri.get());
-
-                    optDateTime.ifPresent(s -> entity.setDate(new Date(Long.parseLong(s))));
+                optImageName.flatMap(i -> optImageUri.flatMap(u -> optDateTime.map(d -> {
+                    entity.setImageName(i);
+                    entity.setImagePath(u);
+                    entity.setDate(new Date(Long.parseLong(d)));
 
                     entities.add(entity);
-                }
+                    return entities;
+                })));
             } catch (JSONException | NumberFormatException e) {
                 // TODO: do something
                 System.out.println("***** ERROR: " + e.getMessage());
             }
-
         });
 
         return entities;
